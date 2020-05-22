@@ -16,6 +16,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="App_Plugins\**\*" target="Content\App_Plugins" />
+    <file src="..\src\uSync.Community.StaticSiteWithSearch\Content\**\*" target="Content" />
   </files>
 </package>

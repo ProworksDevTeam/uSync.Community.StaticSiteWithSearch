@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uSync.Community.StaticSiteWithSearch", "uSync.Community.StaticSiteWithSearch\uSync.Community.StaticSiteWithSearch.csproj", "{822FCEEE-3D92-4386-B6EB-451F8A9B8C3E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecs", "NuSpecs", "{A457CB26-EA38-465F-BDE2-15C3A2370CC8}"
+	ProjectSection(SolutionItems) = preProject
+		..\package\uSync.Community.StaticSiteWithSearch.Core.nuspec = ..\package\uSync.Community.StaticSiteWithSearch.Core.nuspec
+		..\package\uSync.Community.StaticSiteWithSearch.nuspec = ..\package\uSync.Community.StaticSiteWithSearch.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
