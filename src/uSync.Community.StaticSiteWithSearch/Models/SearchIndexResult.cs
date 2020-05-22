@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using uSync.Community.StaticSiteWithSearch.Search;
 
-namespace uSync.Community.StaticSiteWithSearch.Search
+namespace uSync.Community.StaticSiteWithSearch.Models
 {
     public class SearchIndexResult
     {

@@ -22,9 +22,6 @@
     <key alias="toolsDescription">Tools to manage the index</key>
     <key alias="rebuildIndex">Rebuild Index</key>
     <key alias="processIsTakingLonger">The process is taking longer than expected, check the umbraco log to see if there have been any errors during this operation</key>
-    <key alias="indexCannotRebuild">This index cannot be rebuilt because</key>
-    <key alias="missingUpdateApiKey">it does not have an Update API key</key>
-    <key alias="and">and</key>
-    <key alias="missingIndexDataFile">it does not have an index data file</key>
+    <key alias="indexCannotRebuild">This index cannot be rebuilt because the index does not allow updates through Umbraco.  Please refer to the index provider documentation for how to update this index.</key>
   </area>
 </language>

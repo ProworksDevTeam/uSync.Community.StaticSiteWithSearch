@@ -1,4 +1,4 @@
-﻿namespace uSync.Community.StaticSiteWithSearch.Search
+﻿namespace uSync.Community.StaticSiteWithSearch.Models
 {
     public class UpdateItemReference
     {

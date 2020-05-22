@@ -1,4 +1,4 @@
-﻿<div id="externalSiteSearch" class="external-site-search" ng-controller="USDA.ARS.Discovery.ExternalSiteSearchController as vm">
+﻿<div id="externalSiteSearch" class="external-site-search" ng-controller="uSync.Community.StaticSiteWithSearch.ExternalSiteSearchController as vm">
     <div ng-show="vm.loading">
         <umb-load-indicator></umb-load-indicator>
     </div>
@@ -26,7 +26,7 @@
                             <div class="umb-panel-group__details-status-content">
                                 <div class="umb-panel-group__details-status-text">
                                     <button type="button" class="btn-link -underline" ng-click="vm.showIndexInfo(site)">
-                                        {{site.url}}
+                                        {{site.uniqueName}}
                                     </button>
                                 </div>
                             </div>
@@ -137,8 +137,8 @@
                                                             <tr ng-repeat="result in vm.searchResults.results track by $index">
                                                                 <td>{{result.objectID}}</td>
                                                                 <td>
-                                                                    <a target="_blank" ng-href="{{result.url}}">{{result.title}}</a>
-                                                                    <button type="button" class="table__action-overlay color-green" ng-click="vm.showSearchResultDialog(result)">(9 <localize key="externalSiteSearch_fields">fields</localize>)</button>
+                                                                    <a target="_blank" ng-href="{{result.url}}">{{result.name}}</a>
+                                                                    <button type="button" class="table__action-overlay color-green" ng-click="vm.showSearchResultDialog(result)">({{vm.fieldCount(result)}} <localize key="externalSiteSearch_fields">fields</localize>)</button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -180,13 +180,9 @@
 
                                     <table class="table table-bordered table-condensed">
                                         <caption>&nbsp;</caption>
+                                        <tr><th>Name</th><td>{{vm.selectedSite.uniqueName}}</td></tr>
                                         <tr><th>URL</th><td>{{vm.selectedSite.url}}</td></tr>
-                                        <tr><th>Folder Path</th><td>{{vm.selectedSite.folderPath}}</td></tr>
-                                        <tr><th>Application ID</th><td>{{vm.selectedSite.applicationId}}</td></tr>
-                                        <tr><th>Index Name</th><td>{{vm.selectedSite.indexName}}</td></tr>
-                                        <tr><th>Has Search API Key</th><td>{{vm.selectedSite.hasSearchApiKey}}</td></tr>
-                                        <tr><th>Has Update API Key</th><td>{{vm.selectedSite.hasUpdateApiKey}}</td></tr>
-                                        <tr><th>Has Index Data File</th><td>{{vm.selectedSite.hasIndexDataFile}}</td></tr>
+                                        <tr ng-repeat="(key,value) in vm.selectedSite.displayedValues"><th>{{key}}</th><td>{{value}}</td></tr>
                                         <tr><th>Total Records</th><td>{{vm.selectedSite.totalRecords}}</td></tr>
                                     </table>
 
@@ -214,7 +210,7 @@
                                             <ng-form name="indexTools">
 
                                                 <umb-button ng-show="!vm.selectedSite.isProcessing"
-                                                            disabled="!vm.selectedSite.hasUpdateApiKey || !vm.selectedSite.hasIndexDataFile"
+                                                            disabled="!vm.selectedSite.canUpdate"
                                                             type="button"
                                                             button-style="danger"
                                                             action="vm.rebuildIndex()"
@@ -233,13 +229,8 @@
 
                                             </ng-form>
 
-                                            <div class="umb-panel-group__details-status-action-description" ng-show="!vm.selectedSite.hasUpdateApiKey || !vm.selectedSite.hasIndexDataFile">
-                                                <localize key="externalSiteSearch_indexCannotRebuild">This index cannot be rebuilt because</localize>
-                                                <span ng-if="!vm.selectedSite.hasUpdateApiKey"><localize key="externalSiteSearch_missingUpdateApiKey">it does not have an Update API key</localize></span>
-                                                <span ng-if="!vm.selectedSite.hasIndexDataFile">
-                                                    <span ng-if="!vm.selectedSite.hasUpdateApiKey"><localize key="externalSiteSearch_and">and</localize></span>
-                                                    <localize key="externalSiteSearch_missingIndexDataFile">it does not have an index data file</localize>
-                                                </span>
+                                            <div class="umb-panel-group__details-status-action-description" ng-show="!vm.selectedSite.canUpdate">
+                                                <localize key="externalSiteSearch_indexCannotRebuild">This index cannot be rebuilt because the index does not allow updates through Umbraco.  Please refer to the index provider documentation for how to update this index.</localize>
                                             </div>
                                         </div>
                                     </div>

@@ -43,5 +43,14 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\uSync.Community.StaticSiteWithSearch\uSync.Community.StaticSiteWithSearch.csproj">
+      <Project>{822fceee-3d92-4386-b6eb-451f8a9b8c3e}</Project>
+      <Name>uSync.Community.StaticSiteWithSearch</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

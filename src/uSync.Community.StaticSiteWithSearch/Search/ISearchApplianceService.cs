@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using Umbraco.Core.Models;
 using uSync.Community.StaticSiteWithSearch.Config;
+using uSync.Community.StaticSiteWithSearch.Models;
 
 namespace uSync.Community.StaticSiteWithSearch.Search
 {
     public interface ISearchApplianceService
     {
+        IEnumerable<ISearchIndexEntry> DeserializeIndexEntries(string json);
         ISearchIndexEntry GetIndexEntry(Uri baseUri, IContent content);
         void UpdateSearchAppliance(ICollection<ISearchIndexEntry> entries, ICollection<UpdateItemReference> updatedItems = null, ISearchConfig config = null, bool waitForCompletion = false);
         SearchCountResult GetTotalRecords(ISearchConfig config = null);
         SearchIndexResult Search(string term, int page = 1, ISearchConfig config = null);
+        void UpdateSearchAppliance(List<ISearchIndexEntry> entries, UpdateItemReference[] updateItemReferences, ISearchConfig site, bool v);
     }
 }

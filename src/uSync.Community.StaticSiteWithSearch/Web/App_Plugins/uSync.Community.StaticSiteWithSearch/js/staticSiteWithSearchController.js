@@ -1,9 +1,9 @@
 ﻿/**
  * @ngdoc
- * @name USDA.ARS.Discovery.ExternalSiteSearchController
+ * @name uSync.Community.StaticSiteWithSearch.ExternalSiteSearchController
  * @requires $scope
  * @requires $timeout
- * @requires USDA.ARS.Discovery.ExternalSiteSearchService
+ * @requires uSync.Community.StaticSiteWithSearch.ExternalSiteSearchService
  *
  * @description provides the link to the external site search api methods required for the dashboard to function
  */
@@ -34,6 +34,16 @@
             if (!vm.selectedSite) return;
 
             doSearch(vm.selectedSite, vm.searchText, 1);
+        };
+
+        vm.fieldCount = function (result) {
+            var fields = 0;
+
+            for (var key in result) {
+                if (Object.prototype.hasOwnProperty.call(result, key)) fields++;
+            }
+
+            return fields;
         };
 
         vm.showSearchResultDialog = function (result) {
@@ -132,6 +142,6 @@
     }
 
     angular.module('umbraco')
-        .controller('USDA.ARS.Discovery.ExternalSiteSearchController', ['$scope', '$timeout', 'localizationService', 'editorService', 'USDA.ARS.Discovery.ExternalSiteSearchService', externalSiteSearchController]);
+        .controller('uSync.Community.StaticSiteWithSearch.ExternalSiteSearchController', ['$scope', '$timeout', 'localizationService', 'editorService', 'uSync.Community.StaticSiteWithSearch.ExternalSiteSearchService', externalSiteSearchController]);
 
 })();

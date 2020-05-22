@@ -1,6 +1,6 @@
 ﻿/**
  * @ngdoc
- * @name USDA.ARS.Discovery.ExternalSiteSearchService
+ * @name uSync.Community.StaticSiteWithSearch.ExternalSiteSearchService
  * @requires $http
  * 
  * @description provides the link to the external site search api methods required for the dashboard to function
@@ -11,7 +11,7 @@
 
     function externalSiteSearchService($http) {
 
-        var serviceRoot = Umbraco.Sys.ServerVariables.USDA.ARS.Discovery.ExternalSiteSearch.serviceRoot;
+        var serviceRoot = Umbraco.Sys.ServerVariables.uSync.Community.StaticSiteWithSearch.ExternalSiteSearch.serviceRoot;
 
         var service = {
             getKnownSites: getKnownSites,
@@ -47,6 +47,6 @@
     }
 
     angular.module('umbraco.services')
-        .factory('USDA.ARS.Discovery.ExternalSiteSearchService', externalSiteSearchService);
+        .factory('uSync.Community.StaticSiteWithSearch.ExternalSiteSearchService', externalSiteSearchService);
 
 })();
