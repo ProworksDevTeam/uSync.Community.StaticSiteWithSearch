@@ -1,0 +1,18 @@
+﻿{
+    "dashboards": [
+        {
+            "alias": "externalSiteSearch",
+            "view": "/App_Plugins/uSync.Community.StaticSiteWithSearch/views/dashboard.html",
+            "sections": [ "settings" ],
+            "weight": 15
+        }
+    ],
+    "css": [
+        "~/App_Plugins/uSync.Community.StaticSiteWithSearch/css/staticSiteWithSearch.css"
+    ],
+    "javascript": [
+        "~/App_Plugins/uSync.Community.StaticSiteWithSearch/js/staticSiteWithSearchConfigModel.js",
+        "~/App_Plugins/uSync.Community.StaticSiteWithSearch/js/staticSiteWithSearchService.js",
+        "~/App_Plugins/uSync.Community.StaticSiteWithSearch/js/staticSiteWithSearchController.js"
+    ]
+}

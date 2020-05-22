@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>uSync.Community.StaticSiteWithSearch</id>
+    <version>1.0.9</version>
+    <title>uSync.Community.StaticSiteWithSearch</title>
+    <authors>ProWorks</authors>
+    <owners>proworks_bc</owners>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Adds a static site publisher for uSync.Publisher that supports external search appliances</description>
+    <releaseNotes>Improve performance</releaseNotes>
+    <copyright>Copyright 2020</copyright>
+    <dependencies>
+      <dependency id="uSync.Community.StaticSiteWithSearch.Core" version="1.7.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="App_Plugins\**\*" target="Content\App_Plugins" />
+  </files>
+</package>

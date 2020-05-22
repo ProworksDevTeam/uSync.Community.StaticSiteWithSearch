@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>uSync.Community.StaticSiteWithSearch.Core</id>
+    <version>1.0.9</version>
+    <title>uSync.Community.StaticSiteWithSearch</title>
+    <authors>ProWorks</authors>
+    <owners>proworks_bc</owners>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides non-UI components for the uSync.Community.StaticSiteWithSearch package, and can be referenced by non-UI projects for code development and reuse</description>
+    <releaseNotes>Improve performance</releaseNotes>
+    <copyright>Copyright 2020</copyright>
+    <dependencies>
+      <dependency id="uSync.Publisher.Static" version="8.5.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\src\uSync.Community.StaticSiteWithSearch\bin\Debug\uSync.Community.StaticSiteWithSearch.dll" target="lib\net472\uSync.Community.StaticSiteWithSearch.dll" />
+    <file src="..\src\uSync.Community.StaticSiteWithSearch\bin\Debug\uSync.Community.StaticSiteWithSearch.pdb" target="lib\net472\uSync.Community.StaticSiteWithSearch.pdb" />
+  </files>
+</package>
