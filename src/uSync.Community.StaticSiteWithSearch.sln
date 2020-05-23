@@ -7,8 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uSync.Community.StaticSiteW
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecs", "NuSpecs", "{A457CB26-EA38-465F-BDE2-15C3A2370CC8}"
 	ProjectSection(SolutionItems) = preProject
+		..\package\uSync.Community.StaticSiteWithSearch.Algolia.nuspec = ..\package\uSync.Community.StaticSiteWithSearch.Algolia.nuspec
 		..\package\uSync.Community.StaticSiteWithSearch.Core.nuspec = ..\package\uSync.Community.StaticSiteWithSearch.Core.nuspec
-		..\package\uSync.Community.StaticSiteWithSearch.nuspec = ..\package\uSync.Community.StaticSiteWithSearch.nuspec
+		..\package\uSync.Community.StaticSiteWithSearch.SearchGov.nuspec = ..\package\uSync.Community.StaticSiteWithSearch.SearchGov.nuspec
+		..\package\uSync.Community.StaticSiteWithSearch.Web.nuspec = ..\package\uSync.Community.StaticSiteWithSearch.Web.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uSync.Community.StaticSiteWithSearch.Algolia", "uSync.Community.StaticSiteWithSearch.Algolia\uSync.Community.StaticSiteWithSearch.Algolia.csproj", "{4C9A0FA7-60A5-4852-80F2-DB265B9C2F89}"

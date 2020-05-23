@@ -3,12 +3,12 @@
   <metadata>
     <id>uSync.Community.StaticSiteWithSearch.Core</id>
     <version>1.0.9</version>
-    <title>uSync.Community.StaticSiteWithSearch</title>
+    <title>uSync.Community.StaticSiteWithSearch.Core</title>
     <authors>ProWorks</authors>
     <owners>proworks_bc</owners>
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Provides non-UI components for the uSync.Community.StaticSiteWithSearch package, and can be referenced by non-UI projects for code development and reuse</description>
+    <description>Code components for a static site publisher for uSync.Publisher that supports external search appliances</description>
     <releaseNotes>Improve performance</releaseNotes>
     <copyright>Copyright 2020</copyright>
     <dependencies>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>uSync.Community.StaticSiteWithSearch.Web</id>
+    <version>1.0.9</version>
+    <title>uSync.Community.StaticSiteWithSearch</title>
+    <authors>ProWorks</authors>
+    <owners>proworks_bc</owners>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An implementation of uSync.Community.StaticSiteWithSearch for the Algolia search appliance</description>
+    <releaseNotes>Improve performance</releaseNotes>
+    <copyright>Copyright 2020</copyright>
+    <dependencies>
+      <dependency id="uSync.Community.StaticSiteWithSearch.Core" version="1.7.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\src\uSync.Community.StaticSiteWithSearch.Algolia\bin\Debug\uSync.Community.StaticSiteWithSearch.Algolia.dll" target="lib\net472\uSync.Community.StaticSiteWithSearch.Algolia.dll" />
+    <file src="..\src\uSync.Community.StaticSiteWithSearch.Algolia\bin\Debug\uSync.Community.StaticSiteWithSearch.Algolia.pdb" target="lib\net472\uSync.Community.StaticSiteWithSearch.Algolia.pdb" />
+  </files>
+</package>

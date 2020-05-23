@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>uSync.Community.StaticSiteWithSearch</id>
+    <id>uSync.Community.StaticSiteWithSearch.Web</id>
     <version>1.0.9</version>
-    <title>uSync.Community.StaticSiteWithSearch</title>
+    <title>uSync.Community.StaticSiteWithSearch.Web</title>
     <authors>ProWorks</authors>
     <owners>proworks_bc</owners>
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Adds a static site publisher for uSync.Publisher that supports external search appliances</description>
+    <description>Umbraco Back-office management components for a static site publisher for uSync.Publisher that supports external search appliances</description>
     <releaseNotes>Improve performance</releaseNotes>
     <copyright>Copyright 2020</copyright>
     <dependencies>
@@ -16,6 +16,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\src\uSync.Community.StaticSiteWithSearch\Content\**\*" target="Content" />
+    <file src="..\src\uSync.Community.StaticSiteWithSearch\Web\**\*" target="Content" />
   </files>
 </package>
