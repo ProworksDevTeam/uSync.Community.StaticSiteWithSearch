@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>uSync.Community.StaticSiteWithSearch.Web</id>
+    <id>uSync.Community.StaticSiteWithSearch.Algolia</id>
     <version>1.0.9</version>
-    <title>uSync.Community.StaticSiteWithSearch</title>
+    <title>uSync.Community.StaticSiteWithSearch.Algolia</title>
     <authors>ProWorks</authors>
     <owners>proworks_bc</owners>
     <license type="expression">MIT</license>
