@@ -14,5 +14,8 @@ namespace uSync.Community.StaticSiteWithSearch.Models
 
         [JsonProperty("totalPages")]
         public int TotalPages { get; set; }
+
+        [JsonProperty("totalResults")]
+        public int TotalResults { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace uSync.Community.StaticSiteWithSearch.Models
 {
     public class PublisherSearchConfig : IPublisherSearchConfig
     {
-        internal void Populate(XElement serverElement)
+        internal void Populate(XElement serverElement, out XElement searchAppliance)
         {
             var url = serverElement?.Attribute("url")?.Value;
             if (url != null && !url.EndsWith("/")) url += '/';
@@ -29,7 +29,7 @@ namespace uSync.Community.StaticSiteWithSearch.Models
             if (!folder.EndsWith("/")) folder += '/';
             Folder = new Uri(prefix + folder);
 
-            var searchAppliance = serverElement?.Element("searchAppliance");
+            searchAppliance = serverElement?.Element("searchAppliance");
             var replaceables = new Dictionary<string, string>();
             var displayed = new Dictionary<string, string>
             {
@@ -39,10 +39,13 @@ namespace uSync.Community.StaticSiteWithSearch.Models
                 ["Can Update"] = CanUpdate ? "Yes" : "No"
             };
 
-            foreach (var element in searchAppliance.Elements())
+            if (searchAppliance != null)
             {
-                replaceables[element.Name.LocalName] = element.Value;
-                displayed[element.Name.LocalName] = element.Value;
+                foreach (var element in searchAppliance.Elements())
+                {
+                    replaceables[element.Name.LocalName] = element.Value;
+                    displayed[element.Name.LocalName] = element.Value;
+                }
             }
 
             ReplaceableValues = replaceables;
@@ -58,7 +61,7 @@ namespace uSync.Community.StaticSiteWithSearch.Models
         [JsonProperty("folder")]
         public Uri Folder { get; set; }
         [JsonProperty("uniqueName")]
-        public string UniqueName => Url?.ToString();
+        public virtual string UniqueName => Url?.ToString();
         [JsonProperty("canUpdate")]
         public bool CanUpdate { get; set; }
         [JsonProperty("replaceableValues")]

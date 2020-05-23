@@ -16,6 +16,7 @@ using Umbraco.Web.JavaScript;
 using uSync.Community.StaticSiteWithSearch.Config;
 using uSync.Community.StaticSiteWithSearch.Controllers;
 using uSync.Community.StaticSiteWithSearch.Models;
+using uSync.Community.StaticSiteWithSearch.Publisher;
 using uSync.Community.StaticSiteWithSearch.Search;
 
 namespace uSync.Community.StaticSiteWithSearch.Composers
@@ -24,6 +25,8 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
     {
         public void Compose(Composition composition)
         {
+            composition.RegisterUnique<IPublisherSearchConfigFactory, DefaultPublisherSearchConfigFactory>();
+            composition.Register<IStaticSitePublisherExtension, SearchApplianceExtension>();
             composition.Register<IPublisherSearchConfigs, PublisherSearchConfigs>();
             composition.Components().Append<SearchComponent>();
         }
@@ -35,13 +38,15 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
         private readonly ISearchApplianceService _searchApplianceService;
         private readonly ILogger _logger;
         private readonly ISearchConfig _searchConfig;
+        private readonly ISearchIndexEntryHelper _searchIndexEntryHelper;
 
-        public SearchComponent(IUmbracoContextFactory umbracoContextFactory, ISearchApplianceService searchApplianceService, ILogger logger, ISearchConfig searchConfig)
+        public SearchComponent(IUmbracoContextFactory umbracoContextFactory, ISearchApplianceService searchApplianceService, ILogger logger, ISearchConfig searchConfig, ISearchIndexEntryHelper searchIndexEntryHelper)
         {
             _umbracoContextFactory = umbracoContextFactory;
             _searchApplianceService = searchApplianceService;
             _logger = logger;
             _searchConfig = searchConfig;
+            _searchIndexEntryHelper = searchIndexEntryHelper;
         }
 
         public void Initialize()
@@ -115,7 +120,7 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
                             baseUrl = new Uri(absUrl.Substring(0, absUrl.Length - relUrl.Length));
                         }
 
-                        return _searchApplianceService.GetIndexEntry(baseUrl, pe);
+                        return _searchIndexEntryHelper.GetIndexEntry(baseUrl, pe);
                     }).Where(ie => ie != null).ToList();
 
                     _searchApplianceService.UpdateSearchAppliance(entries);

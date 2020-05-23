@@ -12,15 +12,15 @@ namespace uSync.Community.StaticSiteWithSearch.Models
             if (string.IsNullOrWhiteSpace(publisherAlias) || !Handles(publisherAlias)) return null;
 
             var config = CreateNew();
-            Populate(config, element);
+            Populate(config, element, out _);
             return config;
         }
 
         protected virtual bool Handles(string publisherAlias) => ExtensibleStaticPublisher.PublisherAlias == publisherAlias;
         protected virtual T CreateNew() => new T();
-        protected virtual void Populate(T config, XElement element)
+        protected virtual void Populate(T config, XElement serverElement, out XElement searchApplianceElement)
         {
-            config.Populate(element);
+            config.Populate(serverElement, out searchApplianceElement);
         }
     }
 

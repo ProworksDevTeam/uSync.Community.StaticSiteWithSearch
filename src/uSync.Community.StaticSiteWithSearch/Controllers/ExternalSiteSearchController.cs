@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,14 +25,16 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
         private readonly IPublisherSearchConfigs _publisherSearchConfigs;
         private readonly ISearchApplianceService _searchApplianceService;
         private readonly IContentService _contentService;
+        private readonly ISearchIndexEntryHelper _searchIndexEntryHelper;
         private readonly ILogger _logger;
 
-        public ExternalSiteSearchController(ISearchConfig searchConfig, IPublisherSearchConfigs publisherSearchConfigs, ISearchApplianceService searchApplianceService, IContentService contentService)
+        public ExternalSiteSearchController(ISearchConfig searchConfig, IPublisherSearchConfigs publisherSearchConfigs, ISearchApplianceService searchApplianceService, IContentService contentService, ISearchIndexEntryHelper searchIndexEntryHelper)
         {
             _searchConfig = searchConfig;
             _publisherSearchConfigs = publisherSearchConfigs;
             _searchApplianceService = searchApplianceService;
             _contentService = contentService;
+            _searchIndexEntryHelper = searchIndexEntryHelper;
         }
 
         public bool GetApi() => true;
@@ -135,7 +138,7 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
                     current++;
 
                     if (!content.Published) continue;
-                    var entry = _searchApplianceService.GetIndexEntry(baseUri, content);
+                    var entry = _searchIndexEntryHelper.GetIndexEntry(baseUri, content);
                     if (entry != null) entries.Add(entry);
                 }
 
@@ -152,7 +155,7 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
 
             var existingPath = new Uri(folder, Constants.IndexDataFilePath);
             var existingContent = File.Exists(existingPath.LocalPath) ? File.ReadAllText(existingPath.LocalPath) : "";
-            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? _searchApplianceService.DeserializeIndexEntries(existingContent)?.ToList() : new List<ISearchIndexEntry>();
+            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert) : new List<ISearchIndexEntry>();
             if (entries.Count > 0) _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentId = -1, IncludeDescendents = true } }, site, true);
         }
 

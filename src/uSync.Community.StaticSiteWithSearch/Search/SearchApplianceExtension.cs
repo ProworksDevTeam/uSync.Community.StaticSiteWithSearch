@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core.Models;
 using uSync.Community.StaticSiteWithSearch.Config;
+using uSync.Community.StaticSiteWithSearch.Models;
 using uSync.Community.StaticSiteWithSearch.Publisher;
 using uSync.Expansions.Core.Models;
 using uSync.Publisher.Publishers;
@@ -18,13 +19,15 @@ namespace uSync.Community.StaticSiteWithSearch.Search
         private readonly ISearchApplianceService _searchApplianceService;
         private readonly IPublisherSearchConfigs _publisherSearchConfigs;
         private readonly SyncFileService _syncFileService;
+        private readonly ISearchIndexEntryHelper _searchIndexEntryHelper;
 
-        public SearchApplianceExtension(ISearchConfig searchConfig, ISearchApplianceService searchApplianceService, IPublisherSearchConfigs publisherSearchConfigs, SyncFileService syncFileService)
+        public SearchApplianceExtension(ISearchConfig searchConfig, ISearchApplianceService searchApplianceService, IPublisherSearchConfigs publisherSearchConfigs, SyncFileService syncFileService, ISearchIndexEntryHelper searchIndexEntryHelper)
         {
             _searchConfig = searchConfig;
             _searchApplianceService = searchApplianceService;
             _publisherSearchConfigs = publisherSearchConfigs;
             _syncFileService = syncFileService;
+            _searchIndexEntryHelper = searchIndexEntryHelper;
         }
 
         #region Interface Methods
@@ -47,8 +50,11 @@ namespace uSync.Community.StaticSiteWithSearch.Search
         {
             if (!(state is ExtensionContext ctx)) return generatedHtml;
 
-            var entry = _searchApplianceService.GetIndexEntry(ctx.Config.Url, content);
-            if (entry != null) ctx.Entries.Add(entry);
+            if (ctx.Config.CanUpdate)
+            {
+                var entry = _searchIndexEntryHelper.GetIndexEntry(ctx.Config.Url, content);
+                if (entry != null) ctx.Entries.Add(entry);
+            }
 
             if (_searchConfig.ReplaceableValues == null || _searchConfig.ReplaceableValues.Count == 0
                 || ctx.Config.ReplaceableValues == null || ctx.Config.ReplaceableValues.Count == 0
@@ -67,7 +73,7 @@ namespace uSync.Community.StaticSiteWithSearch.Search
 
         public override void BeforeFinalPublish(object state)
         {
-            if (!(state is ExtensionContext ctx)) return;
+            if (!(state is ExtensionContext ctx) || !ctx.Config.CanUpdate) return;
 
             var path = ctx.Config.Folder;
             if (path == null || path.Scheme != "file") return;
@@ -88,7 +94,7 @@ namespace uSync.Community.StaticSiteWithSearch.Search
 
         public override void EndPublish(object state)
         {
-            if (!(state is ExtensionContext ctx)) return;
+            if (!(state is ExtensionContext ctx) || !ctx.Config.CanUpdate) return;
 
             UpdateSearchAppliance(ctx);
         }

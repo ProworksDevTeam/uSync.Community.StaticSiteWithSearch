@@ -2,11 +2,11 @@
 
 namespace uSync.Community.StaticSiteWithSearch.Search
 {
-    public class ISearchIndexEntry
+    public interface ISearchIndexEntry
     {
-        public string ObjectID { get; }
-        public IEnumerable<string> Path { get; }
-        public string Name { get; }
-        public string Url { get; }
+        string ObjectID { get; }
+        IEnumerable<string> Path { get; }
+        string Name { get; }
+        string Url { get; }
     }
 }
