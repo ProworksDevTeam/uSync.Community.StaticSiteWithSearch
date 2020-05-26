@@ -160,7 +160,7 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
             if (token.IsCancellationRequested) return;
 
             var existingContent = result.Success ? Encoding.UTF8.GetString(result.Result) : null;
-            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert) : new List<ISearchIndexEntry>();
+            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert).Where(e => e != null).ToList() : new List<ISearchIndexEntry>();
 
             if (token.IsCancellationRequested) return;
             if (entries.Count > 0) _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentId = -1, IncludeDescendents = true } }, site, true);

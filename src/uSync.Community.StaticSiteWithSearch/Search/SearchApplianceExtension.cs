@@ -78,7 +78,7 @@ namespace uSync.Community.StaticSiteWithSearch.Search
 
             var result = ctx.Config.Deployer.GetFile(ctx.Config.DeployerConfig, Constants.IndexDataFilePath);
             var existingContent = result.Success ? Encoding.UTF8.GetString(result.Result) : null;
-            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert) : new List<ISearchIndexEntry>();
+            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert).Where(e => e != null).ToList() : new List<ISearchIndexEntry>();
 
             var objectsToRemove = ctx.DeployedItems.Where(i => !i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Id.ToString()).ToArray();
             var pathsToRemove = ctx.DeployedItems.Where(i => i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Id.ToString()).ToArray();

@@ -70,7 +70,7 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Services
             if (web == null) return new SearchIndexResult { PageNumber = 1, TotalPages = 1, Results = new ISearchIndexEntry[0] };
 
             var total = int.TryParse(web["total"]?.ToString(), out var t) ? t : 0;
-            var results = (web["results"] as JArray)?.OfType<JObject>().ToList().ConvertAll(_searchIndexEntryHelper.Convert);
+            var results = (web["results"] as JArray)?.OfType<JObject>().ToList().ConvertAll(_searchIndexEntryHelper.Convert).Where(e => e != null).ToList();
 
             return new SearchIndexResult { PageNumber = page, TotalPages = (int)Math.Ceiling(total / (double)pageSize), TotalResults = total, Results = results };
         }

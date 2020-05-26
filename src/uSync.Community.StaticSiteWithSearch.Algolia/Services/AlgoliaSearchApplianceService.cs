@@ -94,7 +94,7 @@ namespace uSync.Community.StaticSiteWithSearch.Algolia.Services
                     AttributesToSnippet = new string[0],
                     Page = page - 1
                 });
-                return new SearchIndexResult { PageNumber = results.Page + 1, Results = results.Hits?.ConvertAll(_searchIndexEntryHelper.Convert), TotalPages = results.NbPages, TotalResults = results.NbHits };
+                return new SearchIndexResult { PageNumber = results.Page + 1, Results = results.Hits?.ConvertAll(_searchIndexEntryHelper.Convert).Where(e => e != null), TotalPages = results.NbPages, TotalResults = results.NbHits };
             }
             catch (Exception ex)
             {
