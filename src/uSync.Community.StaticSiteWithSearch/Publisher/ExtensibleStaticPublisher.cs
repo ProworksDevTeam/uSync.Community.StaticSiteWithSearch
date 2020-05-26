@@ -225,6 +225,10 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
                     {
                         logger.Warn<ExtensibleStaticPublisher>($"Error saving file {file.Key}", ex);
                     }
+                    finally
+                    {
+                        file.Value?.Dispose();
+                    }
                 }
             }
         }
