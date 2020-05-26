@@ -273,6 +273,10 @@
     <Compile Include="Config\IPublisherSearchConfigFactory.cs" />
     <Compile Include="Config\IPublisherSearchConfigs.cs" />
     <Compile Include="Config\ISearchConfig.cs" />
+    <Compile Include="Config\IStaticDeployer.cs" />
+    <Compile Include="Deployers\FolderDeployer.cs" />
+    <Compile Include="Deployers\FtpDeployer.cs" />
+    <Compile Include="Deployers\SftpDeployer.cs" />
     <Compile Include="Models\PublisherSearchConfig.cs" />
     <Compile Include="Models\PublisherSearchConfigFactory.cs" />
     <Compile Include="Models\PublisherSearchConfigs.cs" />

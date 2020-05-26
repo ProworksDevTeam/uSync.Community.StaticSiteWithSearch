@@ -202,8 +202,26 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
                 return;
 
             var folders = new List<string> { "~/css", "~/scripts" };
-            RunExtension((e, s) => e.AddCustomFolders(s, folders));
-            _staticSiteService.SaveFolders(id, folders.ToArray());
+            var files = new Dictionary<string, Stream>();
+
+            RunExtension((e, s) => e.AddCustomFilesAndFolders(s, folders, files));
+
+            if (folders.Count > 0) _staticSiteService.SaveFolders(id, folders.ToArray());
+            if (files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        var path = $"{_syncRoot}/{id}/{file.Key}".Replace("/", "\\");
+                        _syncFileService.SaveFile(path, file.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn<ExtensibleStaticPublisher>($"Error saving file {file.Key}", ex);
+                    }
+                }
+            }
         }
 
         private void Publish(Guid id, ActionArguments args)

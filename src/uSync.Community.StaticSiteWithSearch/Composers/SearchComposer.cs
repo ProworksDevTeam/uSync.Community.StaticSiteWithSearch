@@ -21,6 +21,7 @@ using uSync.Community.StaticSiteWithSearch.Search;
 
 namespace uSync.Community.StaticSiteWithSearch.Composers
 {
+    [ComposeAfter(typeof(uSync.Publisher.Static.StaticPublisherComposer))]
     public class SearchComposer : IUserComposer
     {
         public void Compose(Composition composition)

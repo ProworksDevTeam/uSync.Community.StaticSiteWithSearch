@@ -1,11 +1,19 @@
 ﻿using System.Xml.Linq;
 using uSync.Community.StaticSiteWithSearch.Config;
 using uSync.Community.StaticSiteWithSearch.Publisher;
+using uSync.Publisher.Static;
 
 namespace uSync.Community.StaticSiteWithSearch.Models
 {
     public abstract class PublisherSearchConfigFactory<T> : IPublisherSearchConfigFactory where T : PublisherSearchConfig, new()
     {
+        protected readonly SyncStaticDeployerCollection _deployers;
+
+        protected PublisherSearchConfigFactory(SyncStaticDeployerCollection deployers)
+        {
+            _deployers = deployers;
+        }
+
         public virtual IPublisherSearchConfig Create(XElement element)
         {
             var publisherAlias = element?.Element("publisher")?.Value;
@@ -20,11 +28,14 @@ namespace uSync.Community.StaticSiteWithSearch.Models
         protected virtual T CreateNew() => new T();
         protected virtual void Populate(T config, XElement serverElement, out XElement searchApplianceElement)
         {
-            config.Populate(serverElement, out searchApplianceElement);
+            config.Populate(_deployers, serverElement, out searchApplianceElement);
         }
     }
 
     public class DefaultPublisherSearchConfigFactory : PublisherSearchConfigFactory<PublisherSearchConfig>
     {
+        public DefaultPublisherSearchConfigFactory(SyncStaticDeployerCollection deployers) : base(deployers)
+        {
+        }
     }
 }

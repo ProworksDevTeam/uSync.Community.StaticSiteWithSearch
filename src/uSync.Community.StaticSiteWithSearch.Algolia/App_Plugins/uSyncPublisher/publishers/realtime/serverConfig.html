@@ -1,0 +1,52 @@
+﻿<div>
+    <div class="usync-publish-settings">
+        <umb-box class="usync-main-settings">
+            <umb-box-header title="Content Options"
+                            description="Options for sending content and media"></umb-box-header>
+            <umb-box-content>
+                <umb-control-group label="Include Children"
+                                   description="Include child items">
+                    <usync-user-controlled-boolean title="Include Children" option="vm.server.SendSettings.IncludeChildren" />
+                </umb-control-group>
+
+                <umb-control-group label="Include Media"
+                                   description="Media items used in the content">
+                    <usync-user-controlled-boolean title="Include Media" option="vm.server.SendSettings.IncludeMedia" />
+                </umb-control-group>
+                <umb-control-group label="Delete orphaned"
+                                   description="Remove any content on the Target that isn't included in source folder">
+                    <usync-user-controlled-boolean title="Delete Orphaned" option="vm.server.SendSettings.DeleteMissing" />
+                </umb-control-group>
+            </umb-box-content>
+        </umb-box>
+
+        <umb-box>
+            <umb-box-header title="Developer Settings"
+                            description="If you are controlling deployment of config another way you don't need these settings on"></umb-box-header>
+            <umb-box-content>
+                <umb-control-group label="Include Dependencies"
+                                   description="Doctypes, Datatypes & Macros">
+                    <usync-user-controlled-boolean title="Include Dependencies" option="vm.server.SendSettings.IncludeDependencies" />
+                </umb-control-group>
+
+                <umb-control-group label="Include Files"
+                                   description="Views, Scripts and CSS files">
+                    <usync-user-controlled-boolean title="Include Files" option="vm.server.SendSettings.IncludeFiles" />
+                </umb-control-group>
+
+                <div class="send-option-warning">
+                    <localize key="@usyncpublish_includeLinkedWarn">
+                </div>
+
+                <umb-control-group label="Include Ancestors"
+                                   description="Include parent items">
+                    <usync-user-controlled-boolean option="vm.server.SendSettings.IncludeAncestors" />
+                </umb-control-group>
+                <umb-control-group label="Include Linked"
+                                   description="Content linked to the published content (Generates a lot of items)">
+                    <usync-user-controlled-boolean title="Include Linked" option="vm.server.SendSettings.IncludeLinked" />
+                </umb-control-group>
+            </umb-box-content>
+        </umb-box>
+    </div>
+</div>

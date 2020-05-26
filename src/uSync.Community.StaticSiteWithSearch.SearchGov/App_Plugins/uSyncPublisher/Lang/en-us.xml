@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language alias="en" intName="English (US)" localName="English (US)" lcid="" culture="en-US">
+  <creator>
+    <name>Jumoo</name>
+    <link>http://jumoo.uk</link>
+  </creator>
+  <area alias="usyncpublish">
+
+    <key alias="publishButton">Publish to server</key>
+    
+    <key alias="pushContent">Publish to</key>
+    <key alias="pullContent">Pull content</key>
+    <key alias="pushMedia">Push to</key>
+    <key alias="pullMedia">Pull media</key>
+    
+    <key alias="intro">
+      <![CDATA[uSync.Publisher allows you to link your Umbraco sites so you can push and pull
+                content, media and other settings between them.]]></key>
+
+
+    <key alias="nochangeHeading">No changes detected</key>
+    <key alias="nochangeSummary">
+      <![CDATA[It looks like everything is already in sync between these servers, so you do need to do anything.]]></key>
+    <key alias="updating">Updating</key>
+    <key alias="items">Items</key>
+    <key alias="change">Change</key>
+
+    <key alias="defaultOn">Default on</key>
+    <key alias="defaultOff">Default off</key>
+
+    <key alias="userSetOn">User can set</key>
+    <key alias="userSetOff">Locked</key>
+
+    <!-- dashboard -->
+    <key alias="setupAlert">
+      <![CDATA[Checkout the <a href="https://jumoo.co.uk/usync/publisher/setup/" target="_blank">Security setup guide</a> to harden your setup.]]>
+    </key>
+
+    <key alias="incoming">Incoming enabled</key>
+    <key alias="incomingDesc">This server will listen and respond to requests from other servers</key>
+
+    <key alias="outgoing">Outgoing enabled</key>
+    <key alias="outgoingDesc">Allow publish / pull requests to be made from this server</key>
+
+    <key alias="securityKey">AppId/AppKey</key>
+    <key alias="securityKeyDesc">Setting up a secure channel between servers</key>
+    <key alias="securityKeyNote">
+      <![CDATA[<p>
+    Each server will need to communicate using a secuire AppId and Key. These
+    keys are stored in the <code>uSync.Publish.Config</code> file. You should ensure each server
+    has the correct keys installed in this file.
+    </p>
+    <p>
+    <em>If these values are blank in the config, then uSync.Publisher will create
+    new keys at startup, but the keys will still need to be the same on all servers.</em>
+    </p>]]>
+    </key>
+
+    <key alias="serverUrl">Server url</key>
+    <key alias="serverUrlDesc">This is the server URL; you will need this to connect other Umbraco instances to this site</key>
+    <key alias="serverUrlCopy">Copy this URL and use it in the server URL on your other installations</key>
+
+    <key alias="defaultOptions">Default publish options</key>
+    <key alias="defaultOptionsDesc">Default publishing options when not overridden by server settings</key>
+    
+    <!-- pickers -->
+    <key alias="pickerTitle">Select a target</key>
+    <key alias="pickerDesc">Choose where to publish content</key>
+    <key alias="pickerPullTitle">Select a source</key>
+    <key alias="pickerPullDesc">Choose where to pull content from</key>
+
+    <key alias="check">Check access</key>
+    <key alias="availible">Available</key>
+    <key alias="unavailible">Unavailable</key>
+
+    <!-- dialogs -->
+    <key alias="publishTitle">Publish content</key>
+    <key alias="publishMediaTitle">Push media</key>
+    <key alias="pullTitle">Pull content</key>
+    <key alias="pullMediaTitle">Pull media</key>
+
+    <key alias="reportPullTitle">Proposed changes</key>
+    <key alias="reportPullDesc">Items that will be imported to this site</key>
+
+    <key alias="reportTitle">Proposed changes</key>
+    <key alias="reportDesc">Changes that will be made on the site</key>
+
+    <key alias="includeChildren">Include children</key>
+    <key alias="includeChildrenDesc">include the children of this item</key>
+
+    <key alias="deleteMissing">Delete missing items</key>
+    <key alias="deleteMissingDesc">Remove any items on the target site that are not in this folder</key>
+
+    <key alias="includeMedia">Include media</key>
+    <key alias="includeMediaDesc">Include media items used in these pages</key>
+
+    <key alias="includeLinked">Include linked pages</key>
+    <key alias="includeLinkedDesc">Include content pages linked to from selected items</key>
+    <key alias="includeLinkedWarn">
+      <![CDATA[
+        <p>The following settings can result in a large amount of extra content or media being sent during a publish</p>
+        <p>Most of the time you won't want a user to select these settings.
+      ]]>
+  </key>
+
+    <key alias="includeAncestors">Include ancestors</key>
+    <key alias="includeAncestorsDesc">Include the parents of selected items</key>
+
+    <key alias="includeDependencies">Include dependencies</key>
+    <key alias="includeDependenciesDesc">Include settings for these pages, inc. doctypes and datatypes</key>
+
+    <key alias="includeFiles">Include files</key>
+    <key alias="includeFilesDesc">Include required templates, stylesheets and scripts</key>
+
+    <key alias="groups">User groups</key>
+    <key alias="groupsDesc">Users have to be members of these groups to push or pull items</key>
+    
+    <key alias="networkMode">Use network mode</key>
+    <key alias="networkModeDesc">Visible servers are controlled via a list for each server, sharing a single config for all.</key>
+    <key alias="networkModeHelp">
+      <![CDATA[<h4>Server mode <small>(default)</small></h4>
+      <p>In server mode the configuration of what can be pushed/pulled is setup against each server in the individual server's config file</p>
+      <h4>Network mode</h4>
+      <p>In network mode configuration is based a list of 'visible servers' that is stored in each servers section of the config file. This means a single config file can be shared between all servers without the need of transforms.</p>
+      <p><a href="https://jumoo.co.uk/usync/publisher/modes/" target="_blank">More information</a></p>]]>
+    </key>
+
+    <key alias="allowedServers">Connected Servers</key>
+    <key alias="allowedServersDesc">List of servers that you can push/pull from while on this server (N.B this UI config, not security!)</key>
+
+    <key alias="noChoicesMsg"><![CDATA[<p>Publish this page and related media]]></key>
+
+    <!-- buttons -->
+    <key alias="send">Send to server</key>
+    <key alias="pull">Pull from server</key>
+    <key alias="import">Import</key>
+
+    <!-- sort -->
+    <key alias="sortHelp">
+      <![CDATA[Drag the different items up or down below to set how they should be arranged]]>
+    </key>
+    <key alias="server">Server</key>
+    <key alias="url">Url</key>
+    <key alias="sortEmpty">There are no servers to sort</key>
+
+    <key alias="syncDesc"><![CDATA[
+      <h4>Push the server settings between sites.</h4>
+      <p>Settings can be included when you push and pull content, but only the required settings will be pushed that way.</p>
+      <p>If you want to push settings irrespective of their use in content, you can do that here</p>
+      <p>Here you can also push settings that may not be included in a content publish, such as hostnames and Public Access settings</p>
+      ]]></key>
+
+    <key alias="fulltreeWarning">
+      <![CDATA[Including media when syncing a large content tree can make things go slower. 
+      Consider syncing the media from the media section and then syncing the content tree.]]>
+    </key>
+
+    <key alias="dirtyContent">
+      <![CDATA[
+      The current page has changes that have not been saved or published. Any changes you now push to another server
+      will not include these changes. You should Save and Publish this page first before sending to another site.
+      ]]>
+    </key>
+
+    <key alias="noServers">No servers configured</key>
+
+    <key alias="reloadSettings">Reload settings from disk</key>
+  </area>
+  <area alias="actions">
+    <key alias="pushContent">Push content</key>
+    <key alias="pullContent">Pull content</key>
+    <key alias="pushContentButton">Publish to Server button</key>
+    <key alias="usyncAddServer">Add server</key>
+  </area>
+  <area alias="actionDescriptions">
+    <key alias="pushContent">Push content to other Umbraco sites/servers</key>
+    <key alias="pullContent">Pull content from other Umbraco sites/servers</key>
+    <key alias="pushContentButton">Add 'Publish to Server' option in the stardard Save and Publish button</key>
+  </area>
+  <area alias="actionCategories">
+    <key alias="publisher">uSync Publisher</key>
+  </area>
+</language>

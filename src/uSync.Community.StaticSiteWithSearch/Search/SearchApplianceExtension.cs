@@ -1,7 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Umbraco.Core.Models;
 using uSync.Community.StaticSiteWithSearch.Config;
 using uSync.Community.StaticSiteWithSearch.Models;
@@ -18,15 +21,13 @@ namespace uSync.Community.StaticSiteWithSearch.Search
         private readonly ISearchConfig _searchConfig;
         private readonly ISearchApplianceService _searchApplianceService;
         private readonly IPublisherSearchConfigs _publisherSearchConfigs;
-        private readonly SyncFileService _syncFileService;
         private readonly ISearchIndexEntryHelper _searchIndexEntryHelper;
 
-        public SearchApplianceExtension(ISearchConfig searchConfig, ISearchApplianceService searchApplianceService, IPublisherSearchConfigs publisherSearchConfigs, SyncFileService syncFileService, ISearchIndexEntryHelper searchIndexEntryHelper)
+        public SearchApplianceExtension(ISearchConfig searchConfig, ISearchApplianceService searchApplianceService, IPublisherSearchConfigs publisherSearchConfigs, ISearchIndexEntryHelper searchIndexEntryHelper)
         {
             _searchConfig = searchConfig;
             _searchApplianceService = searchApplianceService;
             _publisherSearchConfigs = publisherSearchConfigs;
-            _syncFileService = syncFileService;
             _searchIndexEntryHelper = searchIndexEntryHelper;
         }
 
@@ -71,16 +72,14 @@ namespace uSync.Community.StaticSiteWithSearch.Search
             return html;
         }
 
-        public override void BeforeFinalPublish(object state)
+        public override void AddCustomFilesAndFolders(object state, ICollection<string> customFolders, IDictionary<string, Stream> customFiles)
         {
             if (!(state is ExtensionContext ctx) || !ctx.Config.CanUpdate) return;
 
-            var path = ctx.Config.Folder;
-            if (path == null || path.Scheme != "file") return;
+            var result = ctx.Config.Deployer.GetFile(ctx.Config.DeployerConfig, Constants.IndexDataFilePath);
+            var existingContent = result.Success ? Encoding.UTF8.GetString(result.Result) : null;
+            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert) : new List<ISearchIndexEntry>();
 
-            var existingPath = new Uri(path, Constants.IndexDataFilePath);
-            var existingContent = System.IO.File.Exists(existingPath.LocalPath) ? System.IO.File.ReadAllText(existingPath.LocalPath) : "";
-            var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JsonConvert.DeserializeObject<List<ISearchIndexEntry>>(existingContent) : new List<ISearchIndexEntry>();
             var objectsToRemove = ctx.DeployedItems.Where(i => !i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Id.ToString()).ToArray();
             var pathsToRemove = ctx.DeployedItems.Where(i => i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Id.ToString()).ToArray();
 
@@ -88,8 +87,7 @@ namespace uSync.Community.StaticSiteWithSearch.Search
             entries.AddRange(ctx.Entries);
 
             var updated = JsonConvert.SerializeObject(entries);
-            var tempPath = $"{ctx.SyncRoot}/{ctx.Id}/{Constants.IndexDataFilePath}".Replace("/", "\\");
-            _syncFileService.SaveFile(tempPath, updated);
+            customFiles[Constants.IndexDataFilePath] = new MemoryStream(Encoding.UTF8.GetBytes(updated));
         }
 
         public override void EndPublish(object state)

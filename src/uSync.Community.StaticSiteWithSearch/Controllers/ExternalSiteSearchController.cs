@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Web.Hosting;
 using System.Web.Http;
@@ -135,6 +136,7 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
             {
                 foreach (var content in contents)
                 {
+                    if (token.IsCancellationRequested) return;
                     current++;
 
                     if (!content.Published) continue;
@@ -142,20 +144,25 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
                     if (entry != null) entries.Add(entry);
                 }
 
+                if (token.IsCancellationRequested) return;
                 if (current < total) contents = _contentService.GetPagedDescendants(-1, ++page, 1000, out total);
             }
 
+            if (token.IsCancellationRequested) return;
             _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentId = -1, IncludeDescendents = true } }, site, true);
         }
 
         private void RebuildRemoteSite(IPublisherSearchConfig site, CancellationToken token)
         {
-            var folder = site.Folder;
-            if (folder == null || folder.Scheme != "file") return;
+            if (site?.Deployer == null || token.IsCancellationRequested) return;
 
-            var existingPath = new Uri(folder, Constants.IndexDataFilePath);
-            var existingContent = File.Exists(existingPath.LocalPath) ? File.ReadAllText(existingPath.LocalPath) : "";
+            var result = site.Deployer.GetFile(site.DeployerConfig, Constants.IndexDataFilePath);
+            if (token.IsCancellationRequested) return;
+
+            var existingContent = result.Success ? Encoding.UTF8.GetString(result.Result) : null;
             var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert) : new List<ISearchIndexEntry>();
+
+            if (token.IsCancellationRequested) return;
             if (entries.Count > 0) _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentId = -1, IncludeDescendents = true } }, site, true);
         }
 

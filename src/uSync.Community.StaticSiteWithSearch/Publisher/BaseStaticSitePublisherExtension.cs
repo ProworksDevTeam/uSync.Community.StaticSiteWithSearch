@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Umbraco.Core.Models;
 using uSync.Publisher.Publishers;
 using uSync8.Core.Dependency;
@@ -13,7 +14,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
         {
         }
 
-        public virtual void AddCustomFolders(object state, ICollection<string> customFolders)
+        public virtual void AddCustomFilesAndFolders(object state, ICollection<string> customFolders, IDictionary<string, Stream> customFiles)
         {
         }
 
