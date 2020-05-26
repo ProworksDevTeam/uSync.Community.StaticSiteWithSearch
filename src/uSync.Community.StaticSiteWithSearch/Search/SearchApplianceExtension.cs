@@ -11,7 +11,6 @@ using uSync.Community.StaticSiteWithSearch.Models;
 using uSync.Community.StaticSiteWithSearch.Publisher;
 using uSync.Expansions.Core.Models;
 using uSync.Publisher.Publishers;
-using uSync8.BackOffice.Services;
 using uSync8.Core.Dependency;
 
 namespace uSync.Community.StaticSiteWithSearch.Search
@@ -20,14 +19,12 @@ namespace uSync.Community.StaticSiteWithSearch.Search
     {
         private readonly ISearchConfig _searchConfig;
         private readonly ISearchApplianceService _searchApplianceService;
-        private readonly IPublisherSearchConfigs _publisherSearchConfigs;
         private readonly ISearchIndexEntryHelper _searchIndexEntryHelper;
 
-        public SearchApplianceExtension(ISearchConfig searchConfig, ISearchApplianceService searchApplianceService, IPublisherSearchConfigs publisherSearchConfigs, ISearchIndexEntryHelper searchIndexEntryHelper)
+        public SearchApplianceExtension(ISearchConfig searchConfig, ISearchApplianceService searchApplianceService, ISearchIndexEntryHelper searchIndexEntryHelper)
         {
             _searchConfig = searchConfig;
             _searchApplianceService = searchApplianceService;
-            _publisherSearchConfigs = publisherSearchConfigs;
             _searchIndexEntryHelper = searchIndexEntryHelper;
         }
 
