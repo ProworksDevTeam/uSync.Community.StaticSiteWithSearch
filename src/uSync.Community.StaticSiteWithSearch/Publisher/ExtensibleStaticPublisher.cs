@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
+using uSync.Community.StaticSiteWithSearch.Config;
 using uSync.Publisher;
 using uSync.Publisher.Configuration;
 using uSync.Publisher.Models;
@@ -27,6 +28,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
         private readonly uSyncStaticSiteService _staticSiteService;
         private readonly IContentService _contentService;
         private readonly SyncFileService _syncFileService;
+        private readonly IPublisherSearchConfigs _publisherSearchConfigs;
         private readonly Dictionary<IStaticSitePublisherExtension, object> _staticSitePublisherExtensions;
         private readonly string _syncRoot;
 
@@ -42,13 +44,15 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
           uSyncStaticSiteService staticSiteService,
           IContentService contentService,
           SyncFileService syncFileService,
-          IEnumerable<IStaticSitePublisherExtension> staticSitePublisherExtensions)
+          IEnumerable<IStaticSitePublisherExtension> staticSitePublisherExtensions,
+          IPublisherSearchConfigs publisherSearchConfigs)
           : base(config, logger, settings, incomingService)
         {
             _outgoingService = outgoingService;
             _staticSiteService = staticSiteService;
             _contentService = contentService;
             _syncFileService = syncFileService;
+            _publisherSearchConfigs = publisherSearchConfigs;
             _staticSitePublisherExtensions = (staticSitePublisherExtensions?.ToList() ?? new List<IStaticSitePublisherExtension>()).ToDictionary(e => e, e => (object)null);
             _syncRoot = Path.Combine(settings.LocalTempPath, "uSync", "pack");
             Actions = new Dictionary<PublishMode, IEnumerable<SyncPublisherAction>>()
@@ -120,7 +124,8 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             if (id == Guid.Empty)
                 id = Guid.NewGuid();
 
-            _staticSitePublisherExtensions.Keys.ToList().ForEach(e => _staticSitePublisherExtensions[e] = e.BeginPublish(id, _syncRoot, action, args));
+            var config = _publisherSearchConfigs.ConfigsByServerName.TryGetValue(args.Target, out var sc) ? sc : null;
+            _staticSitePublisherExtensions.Keys.ToList().ForEach(e => _staticSitePublisherExtensions[e] = e.BeginPublish(id, _syncRoot, action, args, config));
             var itemDependencies = _outgoingService.GetItemDependencies(args.Options.Items, args.Callbacks)?.ToList() ?? new List<uSyncDependency>();
             RunExtension((e, s) => e.AddCustomDependencies(s, itemDependencies));
 
