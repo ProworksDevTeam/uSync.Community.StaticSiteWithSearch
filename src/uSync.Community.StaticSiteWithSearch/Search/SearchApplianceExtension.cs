@@ -34,8 +34,6 @@ namespace uSync.Community.StaticSiteWithSearch.Search
         #region Interface Methods
         public override object BeginPublish(Guid id, string syncRoot, SyncPublisherAction action, ActionArguments args, IPublisherSearchConfig searchConfig)
         {
-            var searchConfig = _publisherSearchConfigs.ConfigsByServerName.TryGetValue(args.Target, out var sc) ? sc : null;
-
             var config = new ExtensionContext
             {
                 Config = searchConfig,
