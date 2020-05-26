@@ -68,17 +68,15 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
 
             var urlHelper = new UrlHelper(new RequestContext(new HttpContextWrapper(HttpContext.Current), new RouteData()));
 
-            e.Add("uSync", new Dictionary<string, object>
+            if (!e.TryGetValue("uSync", out var u) || !(u is Dictionary<string, object> uSync)) e["uSync"] = uSync = new Dictionary<string, object>();
+
+            uSync.Add("Community", new Dictionary<string, object>
             {
-                { "Community", new Dictionary<string, object>
+                { "StaticSiteWithSearch", new Dictionary<string, object>
                     {
-                        { "StaticSiteWithSearch", new Dictionary<string, object>
+                        { "ExternalSiteSearch", new Dictionary<string, object>
                             {
-                                { "ExternalSiteSearch", new Dictionary<string, object>
-                                    {
-                                        { "serviceRoot", urlHelper.GetUmbracoApiServiceBaseUrl<ExternalSiteSearchController>(controller => controller.GetApi()) }
-                                    }
-                                }
+                                { "serviceRoot", urlHelper.GetUmbracoApiServiceBaseUrl<ExternalSiteSearchController>(controller => controller.GetApi()) }
                             }
                         }
                     }

@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -27,7 +25,6 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
         private readonly ISearchApplianceService _searchApplianceService;
         private readonly IContentService _contentService;
         private readonly ISearchIndexEntryHelper _searchIndexEntryHelper;
-        private readonly ILogger _logger;
 
         public ExternalSiteSearchController(ISearchConfig searchConfig, IPublisherSearchConfigs publisherSearchConfigs, ISearchApplianceService searchApplianceService, IContentService contentService, ISearchIndexEntryHelper searchIndexEntryHelper)
         {

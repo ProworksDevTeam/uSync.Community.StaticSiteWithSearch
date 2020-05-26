@@ -29,20 +29,20 @@
             return $http.get(serviceRoot + 'GetKnownSites');
         }
 
-        function getTotalRecords(siteId) {
-            return $http.get(serviceRoot + 'GetTotalRecords?siteId=' + encodeURIComponent(siteId));
+        function getTotalRecords(uniqueName) {
+            return $http.get(serviceRoot + 'GetTotalRecords?uniqueName=' + encodeURIComponent(uniqueName));
         }
 
-        function rebuildIndex(siteId) {
-            return $http.get(serviceRoot + 'RebuildIndex?siteId=' + encodeURIComponent(siteId));
+        function rebuildIndex(uniqueName) {
+            return $http.get(serviceRoot + 'RebuildIndex?uniqueName=' + encodeURIComponent(uniqueName));
         }
 
         function getRebuildStatus(rebuildId) {
             return $http.get(serviceRoot + 'GetRebuildStatus?rebuildId=' + encodeURIComponent(rebuildId));
         }
 
-        function searchIndex(siteId, term, page) {
-            return $http.get(serviceRoot + 'SearchIndex?siteId=' + encodeURIComponent(siteId) + '&term=' + encodeURIComponent(term) + '&page=' + encodeURIComponent(page));
+        function searchIndex(uniqueName, term, page) {
+            return $http.get(serviceRoot + 'SearchIndex?uniqueName=' + encodeURIComponent(uniqueName) + '&term=' + encodeURIComponent(term) + '&page=' + encodeURIComponent(page));
         }
     }
 

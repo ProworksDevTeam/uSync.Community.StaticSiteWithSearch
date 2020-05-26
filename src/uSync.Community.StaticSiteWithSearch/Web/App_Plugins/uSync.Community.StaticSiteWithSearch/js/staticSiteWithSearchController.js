@@ -77,16 +77,16 @@
 
         vm.rebuildIndex = function () {
             var site = vm.selectedSite;
-            if (!site || !site.siteId || !site.hasUpdateApiKey || !site.hasIndexDataFile) return;
+            if (!site || !site.uniqueName || !site.canUpdate) return;
 
             site.isProcessing = true;
-            externalSiteSearchService.rebuildIndex(site.siteId).then(({ data }) => { handleRebuildResult(site, data); }).catch(function () { site.isProcessing = false; });
+            externalSiteSearchService.rebuildIndex(site.uniqueName).then(({ data }) => { handleRebuildResult(site, data); }).catch(function () { site.isProcessing = false; });
         };
 
         function doSearch(site, term, page) {
             site.isProcessing = true;
 
-            externalSiteSearchService.searchIndex(site.siteId, term, page).then(({ data }) => {
+            externalSiteSearchService.searchIndex(site.uniqueName, term, page).then(({ data }) => {
                 if (data) {
                     vm.searchResults = new ExternalSiteSearchResult(site, term, data);
                 }
@@ -119,7 +119,7 @@
         function getTotalRecords(site) {
             site.isProcessing = true;
 
-            externalSiteSearchService.getTotalRecords(site.siteId).then(({ data }) => {
+            externalSiteSearchService.getTotalRecords(site.uniqueName).then(({ data }) => {
                 updateTotalRecords(site, data);
             }).finally(() => site.isProcessing = false);
         }

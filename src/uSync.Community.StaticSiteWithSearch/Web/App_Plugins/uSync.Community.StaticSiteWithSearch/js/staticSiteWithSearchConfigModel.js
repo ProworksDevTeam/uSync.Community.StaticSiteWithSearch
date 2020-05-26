@@ -1,15 +1,6 @@
 ﻿function ExternalSiteSearchConfig(item) {
 	var self = this;
-	item = item || {};
-
-	self.siteId = item.siteId || null;
-	self.url = item.url || null;
-	self.folderPath = item.folderPath || null;
-	self.applicationId = item.applicationId || null;
-	self.indexName = item.indexName || null;
-	self.hasSearchApiKey = item.hasSearchApiKey || false;
-	self.hasUpdateApiKey = item.hasUpdateApiKey || false;
-	self.hasIndexDataFile = item.hasIndexDataFile || false;
+	Object.assign(self, item || {});
 
 	self.totalRecords = 0;
 	self.isHealthy = false;
