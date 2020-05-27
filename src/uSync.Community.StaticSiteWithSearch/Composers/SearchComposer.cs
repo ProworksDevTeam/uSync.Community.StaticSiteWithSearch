@@ -18,6 +18,8 @@ using uSync.Community.StaticSiteWithSearch.Controllers;
 using uSync.Community.StaticSiteWithSearch.Models;
 using uSync.Community.StaticSiteWithSearch.Publisher;
 using uSync.Community.StaticSiteWithSearch.Search;
+using uSync.Publisher.Static;
+using uSync.Publisher.Static.Deployers;
 
 namespace uSync.Community.StaticSiteWithSearch.Composers
 {
@@ -30,6 +32,9 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
             composition.Register<IStaticSitePublisherExtension, SearchApplianceExtension>();
             composition.Register<IPublisherSearchConfigs, PublisherSearchConfigs>();
             composition.Components().Append<SearchComponent>();
+            composition.WithCollectionBuilder<SyncStaticDeployerCollectionBuilder>().Exclude<SyncStaticSFtpDeployer>();
+            composition.WithCollectionBuilder<SyncStaticDeployerCollectionBuilder>().Exclude<StaticFTPDeployer>();
+            composition.WithCollectionBuilder<SyncStaticDeployerCollectionBuilder>().Exclude<StaticFolderDeployer>();
         }
     }
 

@@ -3,9 +3,11 @@ using System;
 using System.IO;
 using System.Net;
 using System.Security.Authentication;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Umbraco.Core;
 using uSync.Community.StaticSiteWithSearch.Config;
+using uSync.Publisher.Models;
 using uSync.Publisher.Static.Deployers;
 
 namespace uSync.Community.StaticSiteWithSearch.Deployers
@@ -14,7 +16,7 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
     {
         public new string Name => "Extensible FTP Deployer";
 
-        public new string Alias => "ftp-ext";
+        public new string Alias => "ftp";
 
         public Attempt<byte[]> GetFile(XElement config, string relativePath)
         {
@@ -42,6 +44,31 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
             }
 
             return result;
+        }
+
+        public async Task<SyncServerStatus> CheckStatus(XElement config)
+        {
+            try
+            {
+                var settings = LoadSettings(config);
+                var ftpClient = new FtpClient(settings.Server)
+                {
+                    Credentials = new NetworkCredential(settings.Username, settings.Password),
+                    EncryptionMode = FtpEncryptionMode.Explicit,
+                    SslProtocols = (SslProtocols.Ssl3 | SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12)
+                };
+
+                ftpClient.ValidateCertificate += (s, e) => e.Accept = true;
+
+                ftpClient.Connect();
+                var result = await ftpClient.DirectoryExistsAsync(settings.Folder);
+                ftpClient.Disconnect();
+                return result ? SyncServerStatus.Success : SyncServerStatus.Unavailable;
+            }
+            catch
+            {
+                return SyncServerStatus.ServerError;
+            }
         }
 
         private Credentials LoadSettings(XElement config)

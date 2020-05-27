@@ -64,9 +64,12 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             };
         }
 
-        public override Task<SyncServerStatus> GetStatus(string target)
+        public override async Task<SyncServerStatus> GetStatus(string target)
         {
-            return Task.FromResult(SyncServerStatus.Success);
+            var config = _publisherSearchConfigs.ConfigsByServerName.TryGetValue(target, out var sc) ? sc : null;
+            if (config?.Deployer == null) return SyncServerStatus.Success;
+
+            return await config.Deployer.CheckStatus(config.DeployerConfig);
         }
 
         public IEnumerable<SyncPublisherAction> PushActions
@@ -114,7 +117,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             }
         }
 
-        public async Task<StepActionResult> Publish(
+        public Task<StepActionResult> Publish(
           Guid id,
           SyncPublisherAction action,
           ActionArguments args)
@@ -140,7 +143,8 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             Publish(id, args);
             RunExtension((e, s) => e.EndPublish(s));
 
-            return await Task.FromResult(new StepActionResult(true, id, args.Options, Enumerable.Empty<uSyncAction>()));
+            var result = new StepActionResult(true, id, args.Options, Enumerable.Empty<uSyncAction>());
+            return Task.FromResult(result);
         }
 
         private void GenerateHtml(IEnumerable<uSyncDependency> dependencies, Guid id, ActionArguments args)

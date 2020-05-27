@@ -1,9 +1,11 @@
 ﻿using Renci.SshNet;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Umbraco.Core;
 using uSync.Community.StaticSiteWithSearch.Config;
+using uSync.Publisher.Models;
 using uSync.Publisher.Static;
 
 namespace uSync.Community.StaticSiteWithSearch.Deployers
@@ -12,7 +14,7 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
     {
         public new string Name => "Extensible SFTP Deployer";
 
-        public new string Alias => "sftp-ext";
+        public new string Alias => "sftp";
 
         public Attempt<byte[]> GetFile(XElement config, string relativePath)
         {
@@ -42,6 +44,27 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
             }
 
             return result;
+        }
+
+        public Task<SyncServerStatus> CheckStatus(XElement config)
+        {
+            try
+            {
+                var settings = LoadSettings(config);
+                var connectionInfo = new ConnectionInfo(settings.Server, settings.Username, new PasswordAuthenticationMethod(settings.Username, settings.Password), new PrivateKeyAuthenticationMethod("rsa.key"));
+
+                using (SftpClient sftpClient = new SftpClient(connectionInfo))
+                {
+                    sftpClient.Connect();
+                    var result = sftpClient.Exists(settings.Folder);
+                    sftpClient.Disconnect();
+                    return Task.FromResult(result ? SyncServerStatus.Success : SyncServerStatus.Unavailable);
+                }
+            }
+            catch
+            {
+                return Task.FromResult(SyncServerStatus.ServerError);
+            }
         }
 
         private Credentials LoadSettings(XElement config)
