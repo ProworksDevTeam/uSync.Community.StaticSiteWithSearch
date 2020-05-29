@@ -124,27 +124,36 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
         {
             if (args?.Options == null)
                 throw new ArgumentNullException(nameof(args));
-            if (id == Guid.Empty)
-                id = Guid.NewGuid();
 
-            var config = _publisherSearchConfigs.ConfigsByServerName.TryGetValue(args.Target, out var sc) ? sc : null;
-            _staticSitePublisherExtensions.Keys.ToList().ForEach(e => _staticSitePublisherExtensions[e] = e.BeginPublish(id, _syncRoot, action, args, config));
-            var itemDependencies = _outgoingService.GetItemDependencies(args.Options.Items, args.Callbacks)?.ToList() ?? new List<uSyncDependency>();
-            RunExtension((e, s) => e.AddCustomDependencies(s, itemDependencies));
+            try
+            {
+                if (id == Guid.Empty)
+                    id = Guid.NewGuid();
 
-            MoveToNextStep(action, args);
-            GenerateHtml(itemDependencies, id, args);
-            MoveToNextStep(action, args);
-            GatherMedia(itemDependencies, id, args);
-            MoveToNextStep(action, args);
-            GatherFiles(id, args);
-            RunExtension((e, s) => e.BeforeFinalPublish(s));
-            MoveToNextStep(action, args);
-            Publish(id, args);
-            RunExtension((e, s) => e.EndPublish(s));
+                var config = _publisherSearchConfigs.ConfigsByServerName.TryGetValue(args.Target, out var sc) ? sc : null;
+                _staticSitePublisherExtensions.Keys.ToList().ForEach(e => _staticSitePublisherExtensions[e] = e.BeginPublish(id, _syncRoot, action, args, config));
+                var itemDependencies = _outgoingService.GetItemDependencies(args.Options.Items, args.Callbacks)?.ToList() ?? new List<uSyncDependency>();
+                RunExtension((e, s) => e.AddCustomDependencies(s, itemDependencies));
 
-            var result = new StepActionResult(true, id, args.Options, Enumerable.Empty<uSyncAction>());
-            return Task.FromResult(result);
+                MoveToNextStep(action, args);
+                GenerateHtml(itemDependencies, id, args);
+                MoveToNextStep(action, args);
+                GatherMedia(itemDependencies, id, args);
+                MoveToNextStep(action, args);
+                GatherFiles(id, args);
+                RunExtension((e, s) => e.BeforeFinalPublish(s));
+                MoveToNextStep(action, args);
+                Publish(id, args);
+                RunExtension((e, s) => e.EndPublish(s));
+
+                var result = new StepActionResult(true, id, args.Options, Enumerable.Empty<uSyncAction>());
+                return Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Error<ExtensibleStaticPublisher>($"Could not publish", ex);
+                throw;
+            }
         }
 
         private void GenerateHtml(IEnumerable<uSyncDependency> dependencies, Guid id, ActionArguments args)
