@@ -143,7 +143,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
                 GatherFiles(id, args);
                 RunExtension((e, s) => e.BeforeFinalPublish(s));
                 MoveToNextStep(action, args);
-                Publish(id, args);
+                Publish(id, args, config);
                 RunExtension((e, s) => e.EndPublish(s));
 
                 var result = new StepActionResult(true, id, args.Options, Enumerable.Empty<uSyncAction>());
@@ -246,9 +246,10 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             }
         }
 
-        private void Publish(Guid id, ActionArguments args)
+        private void Publish(Guid id, ActionArguments args, IPublisherSearchConfig config)
         {
-            _staticSiteService.Publish(id, args.Target, args.Callbacks?.Update);
+            var folder = $"{_syncRoot}/{id}";
+            config.LimitedDeployer.Deploy(folder, config.DeployerConfig, args.Callbacks?.Update);
         }
     }
 }
