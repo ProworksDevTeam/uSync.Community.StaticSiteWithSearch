@@ -13,6 +13,7 @@
     <copyright>Copyright 2020</copyright>
     <dependencies>
       <dependency id="uSync.Community.StaticSiteWithSearch.Core" version="1.7.1" />
+      <dependency id="Algolia.Search" version="6.6.0" />
     </dependencies>
   </metadata>
   <files>

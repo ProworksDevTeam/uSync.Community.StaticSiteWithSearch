@@ -16,13 +16,14 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Services
         private readonly ISearchGovSearchConfig _searchGovSearchConfig;
         private readonly ISearchIndexEntryHelper _searchIndexEntryHelper;
         private readonly ILogger _logger;
-        private HttpClient _client = new HttpClient { BaseAddress = new Uri("https://api.gsa.gov/technology/searchgov/v2/") };
+        private HttpClient _client;
 
         public SearchGovSearchApplianceService(ISearchGovSearchConfig searchGovSearchConfig, ISearchIndexEntryHelper searchIndexEntryHelper, ILogger logger)
         {
             _searchGovSearchConfig = searchGovSearchConfig;
             _searchIndexEntryHelper = searchIndexEntryHelper;
             _logger = logger;
+            _client = new HttpClient { BaseAddress = new Uri(searchGovSearchConfig.BaseUrl) };
         }
 
         public SearchCountResult GetTotalRecords(ISearchConfig config = null)

@@ -14,6 +14,7 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Config
         {
             base.Populate(config, serverElement, out searchApplianceElement);
 
+            config.BaseUrl = searchApplianceElement?.Element("baseUrl")?.Value ?? config.BaseUrl;
             config.Affiliate = searchApplianceElement?.Element("affiliate")?.Value;
             config.AccessKey = searchApplianceElement?.Element("accessKey")?.Value;
 

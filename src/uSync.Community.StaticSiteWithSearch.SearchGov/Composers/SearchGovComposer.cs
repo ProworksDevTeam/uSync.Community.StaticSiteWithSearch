@@ -17,6 +17,7 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Composers
             composition.RegisterUnique<ISearchConfig, SearchGovSearchConfig>();
             composition.RegisterUnique<ISearchGovSearchConfig, SearchGovSearchConfig>();
             composition.RegisterUnique<IPublisherSearchConfigFactory, SearchGovPublisherSearchConfigFactory>();
+            composition.RegisterUnique<ISearchIndexEntryHelper, SearchIndexEntryHelper>();
             composition.RegisterUnique<ISearchApplianceService, SearchGovSearchApplianceService>();
         }
     }

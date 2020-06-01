@@ -9,6 +9,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
+using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 using uSync.Community.StaticSiteWithSearch.Config;
 using uSync.Community.StaticSiteWithSearch.Models;
@@ -16,6 +17,7 @@ using uSync.Community.StaticSiteWithSearch.Search;
 
 namespace uSync.Community.StaticSiteWithSearch.Controllers
 {
+    [PluginController("StaticSiteWithSearch")]
     public class ExternalSiteSearchController : UmbracoAuthorizedApiController
     {
         private static readonly ConcurrentDictionary<Guid, RebuildStatus> _rebuilds = new ConcurrentDictionary<Guid, RebuildStatus>();
