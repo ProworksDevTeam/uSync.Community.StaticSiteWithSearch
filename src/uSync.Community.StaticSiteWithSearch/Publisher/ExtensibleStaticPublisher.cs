@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
+using Umbraco.Web;
 using uSync.Community.StaticSiteWithSearch.Config;
 using uSync.Publisher;
 using uSync.Publisher.Configuration;
@@ -29,6 +30,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
         private readonly IContentService _contentService;
         private readonly SyncFileService _syncFileService;
         private readonly IPublisherSearchConfigs _publisherSearchConfigs;
+        private readonly UmbracoHelper _umbracoHelper;
         private readonly Dictionary<IStaticSitePublisherExtension, object> _staticSitePublisherExtensions;
         private readonly string _syncRoot;
 
@@ -45,7 +47,8 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
           IContentService contentService,
           SyncFileService syncFileService,
           IEnumerable<IStaticSitePublisherExtension> staticSitePublisherExtensions,
-          IPublisherSearchConfigs publisherSearchConfigs)
+          IPublisherSearchConfigs publisherSearchConfigs,
+          UmbracoHelper umbracoHelper)
           : base(config, logger, settings, incomingService)
         {
             _outgoingService = outgoingService;
@@ -53,6 +56,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             _contentService = contentService;
             _syncFileService = syncFileService;
             _publisherSearchConfigs = publisherSearchConfigs;
+            _umbracoHelper = umbracoHelper;
             _staticSitePublisherExtensions = (staticSitePublisherExtensions?.ToList() ?? new List<IStaticSitePublisherExtension>()).ToDictionary(e => e, e => (object)null);
             _syncRoot = Path.Combine(settings.LocalTempPath, "uSync", "pack");
             Actions = new Dictionary<PublishMode, IEnumerable<SyncPublisherAction>>()
@@ -133,17 +137,18 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
                 var config = _publisherSearchConfigs.ConfigsByServerName.TryGetValue(args.Target, out var sc) ? sc : null;
                 _staticSitePublisherExtensions.Keys.ToList().ForEach(e => _staticSitePublisherExtensions[e] = e.BeginPublish(id, _syncRoot, action, args, config));
                 var itemDependencies = _outgoingService.GetItemDependencies(args.Options.Items, args.Callbacks)?.ToList() ?? new List<uSyncDependency>();
+                var itemPaths = new Dictionary<int, string>(itemDependencies.Count) { [-1] = "/" };
                 RunExtension((e, s) => e.AddCustomDependencies(s, itemDependencies));
 
                 MoveToNextStep(action, args);
-                GenerateHtml(itemDependencies, id, args);
+                GenerateHtml(itemDependencies, id, args, itemPaths);
                 MoveToNextStep(action, args);
                 GatherMedia(itemDependencies, id, args);
                 MoveToNextStep(action, args);
                 GatherFiles(id, args);
                 RunExtension((e, s) => e.BeforeFinalPublish(s));
                 MoveToNextStep(action, args);
-                Publish(id, args, config);
+                Publish(id, args, config, itemPaths);
                 RunExtension((e, s) => e.EndPublish(s));
 
                 var result = new StepActionResult(true, id, args.Options, Enumerable.Empty<uSyncAction>());
@@ -156,7 +161,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             }
         }
 
-        private void GenerateHtml(IEnumerable<uSyncDependency> dependencies, Guid id, ActionArguments args)
+        private void GenerateHtml(IEnumerable<uSyncDependency> dependencies, Guid id, ActionArguments args, Dictionary<int, string> itemPaths)
         {
             var list = dependencies.Where(x => x.Udi.EntityType == "document").ToList();
             if (list == null || !list.Any()) return;
@@ -169,12 +174,12 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
                 if (itemId > 0)
                 {
                     args.Callbacks?.Update?.Invoke("Generating: " + page.Name + " html", index, count);
-                    SaveHtml(id, itemId);
+                    SaveHtml(id, itemId, itemPaths);
                 }
             }
         }
 
-        private bool SaveHtml(Guid packId, int itemId)
+        private bool SaveHtml(Guid packId, int itemId, Dictionary<int, string> itemPaths)
         {
             try
             {
@@ -182,7 +187,14 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
                 if (byId != null && byId.Published)
                 {
                     var text = _staticSiteService.GenerateItemHtml(itemId);
+                    if (text != null && text.StartsWith("<!-- Error rendering template") && text.EndsWith(" -->"))
+                    {
+                        logger.Warn<ExtensibleStaticPublisher>(text.Substring(5, text.Length - 9));
+                        return false;
+                    }
+                    
                     var itemPath = _staticSiteService.GetItemPath(itemId);
+                    itemPaths[itemId] = itemPath;
 
                     RunExtension((e, s) => text = e.TransformHtml(s, byId, itemPath, text));
                     if (string.IsNullOrWhiteSpace(text)) return false;
@@ -194,7 +206,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             }
             catch (Exception ex)
             {
-                logger.Warn<uSyncStaticSiteService>("Error Saving Html", ex);
+                logger.Warn<ExtensibleStaticPublisher>("Error Saving Html", ex);
             }
             return false;
         }
@@ -246,9 +258,19 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             }
         }
 
-        private void Publish(Guid id, ActionArguments args, IPublisherSearchConfig config)
+        private void Publish(Guid id, ActionArguments args, IPublisherSearchConfig config, Dictionary<int, string> itemPaths)
         {
             var folder = $"{_syncRoot}/{id}";
+            if (config.Deployer != null && args.Options.DeleteMissing)
+            {
+                // Find all items being published that are publishing their children as well
+                var roots = args.Options.Items.Select(i => i.flags.HasFlag(DependencyFlags.IncludeChildren) && itemPaths.TryGetValue(i.Id, out var path) ? path : null).Where(i => i != null).ToList();
+
+                // Remove any that are sub-folders of another one in the list
+                roots.RemoveAll(r => roots.Any(rt => r != rt && r.StartsWith(rt)));
+
+                if (roots.Count > 0) config.Deployer.RemovePathsIfExist(config.DeployerConfig, roots);
+            }
             config.LimitedDeployer.Deploy(folder, config.DeployerConfig, args.Callbacks?.Update);
         }
     }

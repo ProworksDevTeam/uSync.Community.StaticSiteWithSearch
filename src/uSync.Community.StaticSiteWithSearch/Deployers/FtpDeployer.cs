@@ -1,5 +1,6 @@
 ﻿using FluentFTP;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Security.Authentication;
@@ -69,6 +70,52 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
             {
                 return SyncServerStatus.ServerError;
             }
+        }
+
+        public Attempt<int> RemovePathsIfExist(XElement config, IEnumerable<string> relativePaths)
+        {
+            var success = 0;
+            Exception ex = null;
+
+            try
+            {
+                var settings = LoadSettings(config);
+                var ftpClient = new FtpClient(settings.Server)
+                {
+                    Credentials = new NetworkCredential(settings.Username, settings.Password),
+                    EncryptionMode = FtpEncryptionMode.Explicit,
+                    SslProtocols = (SslProtocols.Ssl3 | SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12)
+                };
+
+                ftpClient.ValidateCertificate += (s, e) => e.Accept = true;
+
+                ftpClient.Connect();
+                foreach (var relativePath in relativePaths)
+                {
+                    if (string.IsNullOrWhiteSpace(relativePath)) continue;
+
+                    try
+                    {
+                        var path = relativePath.Replace('/', '\\');
+                        if (path[0] == '\\') path = path.Substring(1);
+                        path = settings.Folder + (settings.Folder.EndsWith("/") ? "" : "/") + path;
+
+                        if (ftpClient.DirectoryExists(path)) ftpClient.DeleteDirectory(path, FtpListOption.Recursive);
+                        success++;
+                    }
+                    catch (Exception e)
+                    {
+                        ex = e;
+                    }
+                }
+                ftpClient.Disconnect();
+            }
+            catch (Exception e)
+            {
+                ex = e;
+            }
+
+            return ex == null ? Attempt.Succeed(success) : Attempt.Fail(success, ex);
         }
 
         private Credentials LoadSettings(XElement config)

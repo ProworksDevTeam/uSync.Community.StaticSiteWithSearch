@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Umbraco.Core;
@@ -37,6 +39,33 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
             {
                 return Task.FromResult(SyncServerStatus.ServerError);
             }
+        }
+
+        public Attempt<int> RemovePathsIfExist(XElement config, IEnumerable<string> relativePaths)
+        {
+            var success = 0;
+            var baseFolder = config.Element("folder").Value;
+            Exception e = null;
+
+            foreach (var relativePath in relativePaths)
+            {
+                if (string.IsNullOrWhiteSpace(relativePath)) continue;
+
+                try
+                {
+                    var path = relativePath.Replace('/', '\\');
+                    if (path[0] == '\\') path = path.Substring(1);
+                    path = Path.Combine(baseFolder, path);
+                    if (Directory.Exists(path)) Directory.Delete(path, true);
+                    success++;
+                }
+                catch (Exception ex)
+                {
+                    e = ex;
+                }
+            }
+
+            return e == null ? Attempt.Succeed(success) : Attempt.Fail(success, e);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Renci.SshNet;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -65,6 +66,63 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
             {
                 return Task.FromResult(SyncServerStatus.ServerError);
             }
+        }
+
+        public Attempt<int> RemovePathsIfExist(XElement config, IEnumerable<string> relativePaths)
+        {
+            var success = 0;
+            Exception e = null;
+
+            try
+            {
+                var settings = LoadSettings(config);
+                var connectionInfo = new ConnectionInfo(settings.Server, settings.Username, new PasswordAuthenticationMethod(settings.Username, settings.Password), new PrivateKeyAuthenticationMethod("rsa.key"));
+
+                using (var sftpClient = new SftpClient(connectionInfo))
+                {
+                    sftpClient.Connect();
+                    foreach (var relativePath in relativePaths)
+                    {
+                        if (string.IsNullOrWhiteSpace(relativePath)) continue;
+
+                        try
+                        {
+                            var path = relativePath.Replace('/', '\\');
+                            if (path[0] == '\\') path = path.Substring(1);
+                            path = settings.Folder + (settings.Folder.EndsWith("/") ? "" : "/") + path;
+
+                            DeleteDirectory(sftpClient, path);
+                            success++;
+                        }
+                        catch (Exception ex)
+                        {
+                            e = ex;
+                        }
+                    }
+                    sftpClient.Disconnect();
+                }
+            }
+            catch (Exception ex)
+            {
+                e = ex;
+            }
+
+            return e == null ? Attempt.Succeed(success) : Attempt.Fail(success, e);
+        }
+
+        private void DeleteDirectory(SftpClient sftpClient, string path)
+        {
+            if (!sftpClient.Exists(path)) return;
+
+            foreach (var item in sftpClient.ListDirectory(path))
+            {
+                if (".".Equals(item.Name) || "..".Equals(item.Name)) continue;
+
+                if (item.IsDirectory) DeleteDirectory(sftpClient, item.FullName);
+                else sftpClient.Delete(item.FullName);
+            }
+
+            sftpClient.Delete(path);
         }
 
         private Credentials LoadSettings(XElement config)

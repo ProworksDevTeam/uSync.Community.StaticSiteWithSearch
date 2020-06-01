@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Umbraco.Core;
 using uSync.Publisher.Models;
@@ -10,5 +11,6 @@ namespace uSync.Community.StaticSiteWithSearch.Config
     {
         Attempt<byte[]> GetFile(XElement config, string relativePath);
         Task<SyncServerStatus> CheckStatus(XElement config);
+        Attempt<int> RemovePathsIfExist(XElement config, IEnumerable<string> relativePaths);
     }
 }
