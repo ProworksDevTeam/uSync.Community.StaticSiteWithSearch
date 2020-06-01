@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security.Authentication;
 using System.Threading.Tasks;
@@ -90,6 +91,15 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
                 ftpClient.ValidateCertificate += (s, e) => e.Accept = true;
 
                 ftpClient.Connect();
+                var rPaths = relativePaths.ToList();
+                if (!ftpClient.DirectoryExists(settings.Folder)) return Attempt.Succeed(rPaths.Count);
+
+                // Don't ever directly delete the root folder, instead delete all its contents
+                if (rPaths.RemoveAll(p => p == "/") > 0)
+                {
+                    rPaths.AddRange(ftpClient.GetListing(settings.Folder).Select(i => i.FullName));
+                }
+
                 foreach (var relativePath in relativePaths)
                 {
                     if (string.IsNullOrWhiteSpace(relativePath)) continue;
@@ -101,6 +111,7 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
                         path = settings.Folder + (settings.Folder.EndsWith("/") ? "" : "/") + path;
 
                         if (ftpClient.DirectoryExists(path)) ftpClient.DeleteDirectory(path, FtpListOption.Recursive);
+                        else if (ftpClient.FileExists(path)) ftpClient.DeleteFile(path);
                         success++;
                     }
                     catch (Exception e)

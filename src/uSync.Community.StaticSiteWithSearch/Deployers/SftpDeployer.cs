@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Umbraco.Core;
@@ -81,6 +82,15 @@ namespace uSync.Community.StaticSiteWithSearch.Deployers
                 using (var sftpClient = new SftpClient(connectionInfo))
                 {
                     sftpClient.Connect();
+                    var rPaths = relativePaths.ToList();
+                    if (!sftpClient.Exists(settings.Folder)) return Attempt.Succeed(rPaths.Count);
+
+                    // Don't ever directly delete the root folder, instead delete all its contents
+                    if (rPaths.RemoveAll(p => p == "/") > 0)
+                    {
+                        rPaths.AddRange(sftpClient.ListDirectory(settings.Folder).Select(i => i.FullName));
+                    }
+
                     foreach (var relativePath in relativePaths)
                     {
                         if (string.IsNullOrWhiteSpace(relativePath)) continue;
