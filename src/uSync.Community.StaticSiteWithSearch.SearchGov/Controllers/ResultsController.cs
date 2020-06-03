@@ -38,33 +38,48 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Controllers
         [HttpGet]
         public MockSearchResult I14y(string affiliate, string access_key, string query, bool enable_highlighting = true, int limit = 20, int offset = 0, string sort_by = "relevance")
         {
-            if (affiliate != _searchGovSearchConfig.Affiliate || access_key != _searchGovSearchConfig.AccessKey || !_examineManager.TryGetIndex("ExternalIndex", out var idx) || !(idx.GetSearcher() is ISearcher searcher)) return null;
-
-            var results = searcher.Search(query);
-            var map = new Dictionary<string, ISearchResult>((int)results.TotalItemCount);
-            var contents = Umbraco.Content(results.Select(r => r.Id).ToArray()).ToList();
-
-            results.ToList().ForEach(r => map[r.Id] = r);
-
-            var result = new MockSearchResult
+            try
             {
-                Query = query,
-                Web = new WebResults
+                if (affiliate != _searchGovSearchConfig.Affiliate || access_key != _searchGovSearchConfig.AccessKey || !_examineManager.TryGetIndex("ExternalIndex", out var idx) || !(idx.GetSearcher() is ISearcher searcher)) return null;
+
+                var results = searcher.Search(query);
+                var map = new Dictionary<string, ISearchResult>((int)results.TotalItemCount);
+                var contents = Umbraco.Content(results.Select(r => r.Id).ToArray()).ToList();
+
+                results.ToList().ForEach(r => map[r.Id] = r);
+
+                var result = new MockSearchResult
                 {
-                    Total = contents.Count,
-                    NextOffset = contents.Count > (offset + limit) ? new int?(offset + limit) : null,
-                    Results = contents.Skip(offset).Take(limit).Select(c => new WebResult
+                    Query = query,
+                    Web = new WebResults
                     {
-                        Title = c.Name,
-                        Url = c.Url(mode: UrlMode.Absolute),
-                        Snippet = map.TryGetValue(c.Id.ToString(), out var s) ? GetSnippet(query, s) : null
-                    })
-                }
-            };
+                        Total = contents.Count,
+                        NextOffset = contents.Count > (offset + limit) ? new int?(offset + limit) : null,
+                        Results = contents.Skip(offset).Take(limit).Select(c => new WebResult
+                        {
+                            Title = c.Name,
+                            Url = c.Url(mode: UrlMode.Absolute),
+                            Snippet = map.TryGetValue(c.Id.ToString(), out var s) ? GetSnippet(query, s) : null
+                        })
+                    }
+                };
 
-            _searchGovMockResultExtenders.ForEach(e => e.ExtendResults(result, contents, map, affiliate, access_key, query, enable_highlighting, limit, offset, sort_by));
+                _searchGovMockResultExtenders.ForEach(e => e.ExtendResults(result, contents, map, affiliate, access_key, query, enable_highlighting, limit, offset, sort_by));
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error<ResultsController>("Could not generate the Search.gov style results", ex);
+                return new MockSearchResult
+                {
+                    Query = query,
+                    Web = new WebResults
+                    {
+                        Results = new WebResult[0]
+                    }
+                };
+            }
         }
 
         /// <summary>
