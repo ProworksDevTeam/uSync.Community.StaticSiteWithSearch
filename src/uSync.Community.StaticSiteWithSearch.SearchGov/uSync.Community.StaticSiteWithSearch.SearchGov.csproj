@@ -269,8 +269,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Composers\SearchGovComposer.cs" />
+    <Compile Include="Config\ISearchGovMockResultExtender.cs" />
     <Compile Include="Config\SearchGovPublisherSearchConfigFactory.cs" />
     <Compile Include="Controllers\ResultsController.cs" />
+    <Compile Include="Models\MockResult.cs" />
     <Compile Include="Models\SearchGovPublisherSearchConfig.cs" />
     <Compile Include="Models\SearchGovSearchConfig.cs" />
     <Compile Include="Models\SearchIndexEntry.cs" />

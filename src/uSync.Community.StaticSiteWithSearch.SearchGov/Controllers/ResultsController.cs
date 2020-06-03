@@ -1,11 +1,8 @@
 ﻿using Examine;
-using Newtonsoft.Json;
-using Superpower.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
@@ -18,6 +15,7 @@ using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
+using uSync.Community.StaticSiteWithSearch.SearchGov.Config;
 using uSync.Community.StaticSiteWithSearch.SearchGov.Models;
 
 namespace uSync.Community.StaticSiteWithSearch.SearchGov.Controllers
@@ -27,16 +25,18 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Controllers
     {
         private readonly ISearchGovSearchConfig _searchGovSearchConfig;
         private readonly IExamineManager _examineManager;
+        private readonly List<ISearchGovMockResultExtender> _searchGovMockResultExtenders;
 
-        public ResultsController(IGlobalSettings globalSettings, IUmbracoContextAccessor umbracoContextAccessor, ISqlContext sqlContext, ServiceContext services, AppCaches appCaches, IProfilingLogger logger, IRuntimeState runtimeState, UmbracoHelper umbracoHelper, UmbracoMapper umbracoMapper, ISearchGovSearchConfig searchGovSearchConfig, IExamineManager examineManager)
+        public ResultsController(IGlobalSettings globalSettings, IUmbracoContextAccessor umbracoContextAccessor, ISqlContext sqlContext, ServiceContext services, AppCaches appCaches, IProfilingLogger logger, IRuntimeState runtimeState, UmbracoHelper umbracoHelper, UmbracoMapper umbracoMapper, ISearchGovSearchConfig searchGovSearchConfig, IExamineManager examineManager, IEnumerable<ISearchGovMockResultExtender> searchGovMockResultExtenders)
             : base(globalSettings, umbracoContextAccessor, sqlContext, services, appCaches, logger, runtimeState, umbracoHelper, umbracoMapper)
         {
             _searchGovSearchConfig = searchGovSearchConfig;
             _examineManager = examineManager;
+            _searchGovMockResultExtenders = searchGovMockResultExtenders?.ToList() ?? new List<ISearchGovMockResultExtender>();
         }
 
         [HttpGet]
-        public IEnumerable<MockSearchResult> I14y(string affiliate, string access_key, string query, bool enable_highlighting = true, int limit = 20, int offset = 0, string sort_by = "relevance")
+        public MockSearchResult I14y(string affiliate, string access_key, string query, bool enable_highlighting = true, int limit = 20, int offset = 0, string sort_by = "relevance")
         {
             if (affiliate != _searchGovSearchConfig.Affiliate || access_key != _searchGovSearchConfig.AccessKey || !_examineManager.TryGetIndex("ExternalIndex", out var idx) || !(idx.GetSearcher() is ISearcher searcher)) return null;
 
@@ -46,31 +46,38 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Controllers
 
             results.ToList().ForEach(r => map[r.Id] = r);
 
-            return new[]
+            var result = new MockSearchResult
             {
-                new MockSearchResult
+                Query = query,
+                Web = new WebResults
                 {
-                    Query = query,
-                    Web = new WebResults
+                    Total = contents.Count,
+                    NextOffset = contents.Count > (offset + limit) ? new int?(offset + limit) : null,
+                    Results = contents.Skip(offset).Take(limit).Select(c => new WebResult
                     {
-                        Total = contents.Count,
-                        NextOffset = contents.Count > (offset + limit) ? offset + limit : -1,
-                        Results = contents.Skip(offset).Take(limit).Select(c => new WebResult
-                        {
-                            Title = c.Name,
-                            Url = c.Url(mode: UrlMode.Absolute),
-                            Snippet = map.TryGetValue(c.Id.ToString(), out var s) ? GetSnippet(query, s) : null
-                        })
-                    }
+                        Title = c.Name,
+                        Url = c.Url(mode: UrlMode.Absolute),
+                        Snippet = map.TryGetValue(c.Id.ToString(), out var s) ? GetSnippet(query, s) : null
+                    })
                 }
             };
+
+            _searchGovMockResultExtenders.ForEach(e => e.ExtendResults(result, contents, map, affiliate, access_key, query, enable_highlighting, limit, offset, sort_by));
+
+            return result;
         }
 
+        /// <summary>
+        /// Gets the first two matches of the query, and a few words before and after
+        /// </summary>
         private string GetSnippet(string query, ISearchResult result)
         {
             if (result == null) return null;
 
+            var sb = new StringBuilder();
             var lower = query.ToLowerInvariant();
+            var matches = 0;
+
             foreach (var field in result.AllValues)
             {
                 foreach (var value in field.Value)
@@ -80,53 +87,33 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Controllers
                     var idx = value.ToLowerInvariant().IndexOf(lower);
                     if (idx < 0) continue;
 
-                    var min = Math.Max(idx - 20, 0);
-                    var max = Math.Min(idx + lower.Length + 20, value.Length);
+                    var min = idx;
+                    var max = idx + lower.Length;
 
-                    return value.Substring(min, idx - min) + '\uE000' + value.Substring(idx, query.Length) + '\uE001' + value.Substring(idx + query.Length, max - (idx + query.Length));
+                    // Include 7 words before
+                    for (var i = 0; i < 7 && min > 0; i++)
+                    {
+                        min = Math.Max(value.LastIndexOf(' ', min - 1) + 1, 0);
+                    }
+
+                    // Include 6 words after
+                    for (var i = 0; i < 6 && max < value.Length; i++)
+                    {
+                        var index = value.IndexOf(' ', max + 1);
+                        max = idx > 0 ? index : value.Length;
+                    }
+
+                    if (min > 0 || matches > 0) sb.Append("...");
+                    sb.Append(value.Substring(min, idx - min));
+                    sb.Append('\uE000');
+                    sb.Append(value.Substring(idx, query.Length));
+                    sb.Append('\uE001');
+                    sb.Append(value.Substring(idx + query.Length, max - (idx + query.Length)));
+
+                    if (++matches >= 2) return sb.ToString();
                 }
             }
 
             return null;
         }
-
-        public class MockSearchResult
-        {
-            [JsonProperty("query")]
-            public string Query { get; set; }
-
-            [JsonProperty("web")]
-            public WebResults Web { get; set; }
-        }
-
-        public class WebResults
-        {
-            [JsonProperty("total")]
-            public int Total { get; set; }
-
-            [JsonProperty("next_offset")]
-            public int NextOffset { get; set; }
-
-            [JsonProperty("spelling_correction")]
-            public string SpellingCorrection { get; set; }
-
-            [JsonProperty("results")]
-            public IEnumerable<WebResult> Results { get; set; }
-        }
-
-        public class WebResult
-        {
-            [JsonProperty("title")]
-            public string Title { get; set; }
-
-            [JsonProperty("url")]
-            public string Url { get; set; }
-
-            [JsonProperty("snippet")]
-            public string Snippet { get; set; }
-
-            [JsonProperty("publication_date")]
-            public string PublicationDate { get; set; }
-        }
-    }
 }
