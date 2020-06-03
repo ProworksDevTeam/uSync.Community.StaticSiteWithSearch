@@ -116,4 +116,5 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Controllers
 
             return null;
         }
+    }
 }
