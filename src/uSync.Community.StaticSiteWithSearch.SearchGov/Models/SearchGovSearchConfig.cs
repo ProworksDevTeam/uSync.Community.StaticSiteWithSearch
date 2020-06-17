@@ -15,7 +15,7 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Models
     public class SearchGovSearchConfig : ISearchGovSearchConfig
     {
         [JsonIgnore]
-        public string BaseUrl { get; } = ConfigurationManager.AppSettings["Search:BaseUrl"] ?? "https://api.gsa.gov/technology/searchgov/v2/";
+        public string BaseUrl { get; } = ConfigurationManager.AppSettings["Search:BaseUrl"] ?? "https://search.usa.gov/api/v2/search/i14y";
 
         [JsonIgnore]
         public string Affiliate { get; } = ConfigurationManager.AppSettings["Search:Affiliate"];

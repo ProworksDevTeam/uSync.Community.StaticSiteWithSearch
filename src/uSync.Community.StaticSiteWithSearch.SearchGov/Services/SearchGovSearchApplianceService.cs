@@ -53,7 +53,7 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Services
         {
             if (!(config is ISearchGovSearchConfig cfg)) cfg = _searchGovSearchConfig;
 
-            var url = $"results/i14y?affiliate={Uri.EscapeDataString(cfg.Affiliate)}"
+            var url = $"{_searchGovSearchConfig.BaseUrl}?affiliate={Uri.EscapeDataString(cfg.Affiliate)}"
                 + $"&access_key={Uri.EscapeDataString(cfg.AccessKey)}"
                 + $"&query={Uri.EscapeDataString(term)}"
                 + $"&enable_highlighting={enableHighlighting}"
