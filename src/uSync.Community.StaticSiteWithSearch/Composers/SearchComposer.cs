@@ -30,6 +30,7 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
         {
             composition.RegisterUnique<IPublisherSearchConfigFactory, DefaultPublisherSearchConfigFactory>();
             composition.Register<IStaticSitePublisherExtension, SearchApplianceExtension>();
+            composition.Register<IStaticSitePublisherExtension, ImageProcessorExtension>();
             composition.Register<IPublisherSearchConfigs, PublisherSearchConfigs>();
             composition.Components().Append<SearchComponent>();
             composition.WithCollectionBuilder<SyncStaticDeployerCollectionBuilder>().Exclude<SyncStaticSFtpDeployer>();
