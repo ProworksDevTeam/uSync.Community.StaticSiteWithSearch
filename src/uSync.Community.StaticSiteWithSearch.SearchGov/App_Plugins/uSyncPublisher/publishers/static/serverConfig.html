@@ -1,0 +1,29 @@
+﻿<div>
+    <div >
+        <umb-box class="usync-main-settings">
+            <umb-box-header title="Static site publish"
+                            description="Options for sending content and media"></umb-box-header>
+            <umb-box-content>
+                <umb-control-group label="Publish Full Site"
+                                   description="Publish all the pages in the site">
+                    <usync-user-controlled-boolean option="vm.server.SendSettings.IncludeAncestors" />
+                </umb-control-group>
+
+                <umb-control-group label="Include Children"
+                                   description="Include child items">
+                    <usync-user-controlled-boolean title="Include Children" option="vm.server.SendSettings.IncludeChildren" />
+                </umb-control-group>
+
+                <umb-control-group label="Include Media"
+                                   description="Media items used in the content">
+                    <usync-user-controlled-boolean title="Include Media" option="vm.server.SendSettings.IncludeMedia" />
+                </umb-control-group>
+
+                <umb-control-group label="Include Files"
+                                   description="All the css, scripts etc that are needed for the site">
+                    <usync-user-controlled-boolean title="Include Files" option="vm.server.SendSettings.IncludeFiles" />
+                </umb-control-group>
+            </umb-box-content>
+        </umb-box>
+    </div>
+</div>

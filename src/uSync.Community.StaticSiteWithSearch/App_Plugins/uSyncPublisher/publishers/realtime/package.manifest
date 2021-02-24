@@ -1,0 +1,11 @@
+{
+  "javascript": [
+    "~/App_Plugins/uSyncPublisher/publishers/realtime/configController.js",
+    "~/App_Plugins/uSyncPublisher/publishers/realtime/settingsController.js",
+    "~/App_Plugins/uSyncPublisher/publishers/realtime/reportController.js",
+    "~/App_Plugins/uSyncPublisher/publishers/realtime/resultController.js",
+    "~/App_Plugins/uSyncPublisher/publishers/realtime/completeController.js",
+    "~/App_Plugins/uSyncPublisher/publishers/realtime/serverConfig.js",
+    "~/App_Plugins/uSyncPublisher/publishers/realtime/langController.js"
+  ]
+}

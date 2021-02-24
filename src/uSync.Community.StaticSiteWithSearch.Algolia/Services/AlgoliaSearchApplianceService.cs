@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Hosting;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 using uSync.Community.StaticSiteWithSearch.Algolia.Models;
 using uSync.Community.StaticSiteWithSearch.Config;
@@ -34,7 +35,7 @@ namespace uSync.Community.StaticSiteWithSearch.Algolia.Services
         public void UpdateSearchAppliance(ICollection<ISearchIndexEntry> entries, ICollection<UpdateItemReference> updatedItems = null, ISearchConfig config = null, bool waitForCompletion = false)
         {
             var currentEntries = entries;
-            var currentItems = updatedItems ?? entries.Select(e => new UpdateItemReference { ContentId = int.Parse(e.ObjectID) }).ToList();
+            var currentItems = updatedItems ?? entries.Select(e => new UpdateItemReference { ContentUdi = Udi.Parse(e.ObjectID) }).ToList();
             var currentConfig = config as IAlgoliaSearchConfig ?? _algoliaSearchConfig;
 
             if (waitForCompletion)
@@ -117,7 +118,7 @@ namespace uSync.Community.StaticSiteWithSearch.Algolia.Services
             if (token.IsCancellationRequested) return;
 
             // Delete any existing entries (or more importantly previously removed children) for the items being inserted
-            var filterItems = updatedItems.Select(i => i.IncludeDescendents ? $"path:{i.ContentId}" : $"objectID:{i.ContentId}");
+            var filterItems = updatedItems.Select(i => i.IncludeDescendents ? $"path:{i.ContentUdi}" : $"objectID:{i.ContentUdi}");
             var filters = string.Join(" OR ", filterItems);
             if (!string.IsNullOrWhiteSpace(filters))
             {

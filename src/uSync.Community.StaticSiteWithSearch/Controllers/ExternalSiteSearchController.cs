@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Web.Hosting;
 using System.Web.Http;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Services;
 using Umbraco.Web.Mvc;
@@ -148,7 +149,7 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
             }
 
             if (token.IsCancellationRequested) return;
-            _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentId = -1, IncludeDescendents = true } }, site, true);
+            _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentUdi = new GuidUdi(global::Umbraco.Core.Constants.UdiEntityType.Document, Guid.Empty), IncludeDescendents = true } }, site, true);
         }
 
         private void RebuildRemoteSite(IPublisherSearchConfig site, CancellationToken token)
@@ -162,7 +163,7 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
             var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert).Where(e => e != null).ToList() : new List<ISearchIndexEntry>();
 
             if (token.IsCancellationRequested) return;
-            if (entries.Count > 0) _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentId = -1, IncludeDescendents = true } }, site, true);
+            if (entries.Count > 0) _searchApplianceService.UpdateSearchAppliance(entries, new[] { new UpdateItemReference { ContentUdi = new GuidUdi(global::Umbraco.Core.Constants.UdiEntityType.Document, Guid.Empty), IncludeDescendents = true } }, site, true);
         }
 
         private class RebuildStatus

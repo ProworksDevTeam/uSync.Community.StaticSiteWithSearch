@@ -75,8 +75,8 @@ namespace uSync.Community.StaticSiteWithSearch.Search
             var existingContent = result.Success ? Encoding.UTF8.GetString(result.Result) : null;
             var entries = !string.IsNullOrWhiteSpace(existingContent) && existingContent[0] == '[' ? JArray.Parse(existingContent)?.OfType<JObject>()?.ToList().ConvertAll(_searchIndexEntryHelper.Convert).Where(e => e != null).ToList() : new List<ISearchIndexEntry>();
 
-            var objectsToRemove = ctx.DeployedItems.Where(i => !i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Id.ToString()).ToArray();
-            var pathsToRemove = ctx.DeployedItems.Where(i => i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Id.ToString()).ToArray();
+            var objectsToRemove = ctx.DeployedItems.Where(i => !i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Udi.ToString()).ToArray();
+            var pathsToRemove = ctx.DeployedItems.Where(i => i.flags.HasFlag(DependencyFlags.IncludeChildren)).Select(i => i.Udi.ToString()).ToArray();
 
             entries.RemoveAll(i => objectsToRemove.Contains(i.ObjectID) || i.Path.Any(p => pathsToRemove.Contains(p)));
             entries.AddRange(ctx.Entries);
@@ -108,7 +108,7 @@ namespace uSync.Community.StaticSiteWithSearch.Search
             public Guid Id { get; set; }
             public List<ISearchIndexEntry> Entries { get; } = new List<ISearchIndexEntry>();
             public List<SyncItem> DeployedItems { get; set; }
-            public IEnumerable<UpdateItemReference> UpdatedItems => DeployedItems.Select(i => new UpdateItemReference { ContentId = i.Id, IncludeDescendents = i.flags.HasFlag(DependencyFlags.IncludeChildren) });
+            public IEnumerable<UpdateItemReference> UpdatedItems => DeployedItems.Select(i => new UpdateItemReference { ContentUdi = i.Udi, IncludeDescendents = i.flags.HasFlag(DependencyFlags.IncludeChildren) });
         }
         #endregion
     }

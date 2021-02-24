@@ -97,7 +97,7 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
         {
             try
             {
-                var updatedItems = contents.Select(c => new UpdateItemReference { ContentId = c.Id }).ToList();
+                var updatedItems = contents.Select(c => new UpdateItemReference { ContentUdi = c.GetUdi() }).ToList();
                 _searchApplianceService.UpdateSearchAppliance(new List<ISearchIndexEntry>(), updatedItems);
             }
             catch (Exception ex)

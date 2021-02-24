@@ -1,0 +1,25 @@
+﻿<div ng-controller="uSyncStaticPublishConfigController as pvm">
+    <div class="usync-publish-options">
+
+        <usync-send-option label="Publish full site"
+                           description="publish all the files required for the site"
+                           option="pvm.flags.includeAncestors">
+        </usync-send-option>
+
+        <usync-send-option label="@usyncpublish_includeChildren"
+                           description="@usyncpublish_includeChildrenDesc"
+                           option="pvm.flags.includeChildren">
+        </usync-send-option>
+
+        <usync-send-option label="Publish Media"
+                           description="publish media"
+                           option="pvm.flags.includeMedia">
+        </usync-send-option>
+
+        <usync-send-option label="Publish Files"
+                           description="Publish site files"
+                           option="pvm.flags.includeFiles">
+        </usync-send-option>
+
+    </div>
+</div>

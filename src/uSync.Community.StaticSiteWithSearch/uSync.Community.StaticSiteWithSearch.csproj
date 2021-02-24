@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\uSync.8.6.2\build\uSync.props" Condition="Exists('..\packages\uSync.8.6.2\build\uSync.props')" />
+  <Import Project="..\packages\uSync.8.7.0.1\build\uSync.props" Condition="Exists('..\packages\uSync.8.7.0.1\build\uSync.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -245,26 +245,26 @@
     <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Web.8.6.1\lib\net472\Umbraco.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="uSync.Expansions.Core, Version=8.6.1.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\uSync.Expansions.Core.8.6.1.1\lib\net472\uSync.Expansions.Core.dll</HintPath>
+    <Reference Include="uSync.Expansions.Core, Version=8.7.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\uSync.Expansions.Core.8.7.0.1\lib\net472\uSync.Expansions.Core.dll</HintPath>
     </Reference>
-    <Reference Include="uSync.Publisher, Version=8.6.1.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\uSync.Publisher.8.6.1.1\lib\net472\uSync.Publisher.dll</HintPath>
+    <Reference Include="uSync.Publisher, Version=8.7.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\uSync.Publisher.8.7.0.1\lib\net472\uSync.Publisher.dll</HintPath>
     </Reference>
     <Reference Include="uSync.Publisher.Static, Version=1.6.1.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\uSync.Publisher.Static.8.6.1.1\lib\net472\uSync.Publisher.Static.dll</HintPath>
+      <HintPath>..\packages\uSync.Publisher.Static.8.7.0.1\lib\net472\uSync.Publisher.Static.dll</HintPath>
     </Reference>
-    <Reference Include="uSync8.BackOffice, Version=8.6.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\uSync.BackOffice.Core.8.6.2\lib\net472\uSync8.BackOffice.dll</HintPath>
+    <Reference Include="uSync8.BackOffice, Version=8.7.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\uSync.BackOffice.Core.8.7.0.1\lib\net472\uSync8.BackOffice.dll</HintPath>
     </Reference>
     <Reference Include="uSync8.Community.Contrib, Version=8.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\uSync.Community.Contrib.8.6.2\lib\net472\uSync8.Community.Contrib.dll</HintPath>
+      <HintPath>..\packages\uSync.Community.Contrib.8.7.0.1\lib\net472\uSync8.Community.Contrib.dll</HintPath>
     </Reference>
-    <Reference Include="uSync8.ContentEdition, Version=8.6.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\uSync.ContentEdition.8.6.2\lib\net472\uSync8.ContentEdition.dll</HintPath>
+    <Reference Include="uSync8.ContentEdition, Version=8.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\uSync.ContentEdition.8.7.0.1\lib\net472\uSync8.ContentEdition.dll</HintPath>
     </Reference>
-    <Reference Include="uSync8.Core, Version=8.6.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\uSync.Core.8.6.2\lib\net472\uSync8.Core.dll</HintPath>
+    <Reference Include="uSync8.Core, Version=8.7.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\uSync.Core.8.7.0.1\lib\net472\uSync8.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -297,10 +297,120 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="App_Plugins\uSync8\addons.json" />
+    <None Include="App_Plugins\uSync8\package.manifest" />
+    <None Include="App_Plugins\uSyncExpansions\package.manifest" />
+    <None Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\templates.json" />
+    <None Include="App_Plugins\uSyncPublisher\Overlay\package.manifest" />
+    <None Include="App_Plugins\uSyncPublisher\package.manifest" />
+    <None Include="App_Plugins\uSyncPublisher\publishers\realtime\modes.json" />
+    <None Include="App_Plugins\uSyncPublisher\publishers\realtime\package.manifest" />
+    <None Include="App_Plugins\uSyncPublisher\publishers\static\package.manifest" />
+    <None Include="Config\uSync.Publish.config" />
+    <None Include="Config\uSync8.config" />
     <None Include="packages.config" />
     <None Include="Web\App_Plugins\uSync.Community.StaticSiteWithSearch\package.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\uSync8\backoffice\uSync8\dashboard.html" />
+    <Content Include="App_Plugins\uSync8\backoffice\uSync8\uSyncDashboardController.js" />
+    <Content Include="App_Plugins\uSync8\changeDialog.html" />
+    <Content Include="App_Plugins\uSync8\changeDialogController.js" />
+    <Content Include="App_Plugins\uSync8\components\uSyncProgressView.html" />
+    <Content Include="App_Plugins\uSync8\components\usyncProgressViewComponent.js" />
+    <Content Include="App_Plugins\uSync8\components\uSyncReportView.html" />
+    <Content Include="App_Plugins\uSync8\components\uSyncReportViewComponent.js" />
+    <Content Include="App_Plugins\uSync8\lang\en-US.xml" />
+    <Content Include="App_Plugins\uSync8\settings\default.html" />
+    <Content Include="App_Plugins\uSync8\settings\expansion.html" />
+    <Content Include="App_Plugins\uSync8\settings\expansionController.js" />
+    <Content Include="App_Plugins\uSync8\settings\settings.html" />
+    <Content Include="App_Plugins\uSync8\settings\settingsController.js" />
+    <Content Include="App_Plugins\uSync8\settings\uSyncController.js" />
+    <Content Include="App_Plugins\uSync8\usync.css" />
+    <Content Include="App_Plugins\uSync8\uSyncHub.js" />
+    <Content Include="App_Plugins\uSync8\uSyncService.js" />
+    <Content Include="App_Plugins\uSync8\usync_864.css" />
+    <Content Include="App_Plugins\uSync8\uSync_864.js" />
+    <Content Include="App_Plugins\uSyncExpansions\components\licenceComponent.html" />
+    <Content Include="App_Plugins\uSyncExpansions\components\licenceComponent.js" />
+    <Content Include="App_Plugins\uSyncExpansions\components\uSyncErrorComponent.html" />
+    <Content Include="App_Plugins\uSyncExpansions\components\uSyncErrorComponent.js" />
+    <Content Include="App_Plugins\uSyncExpansions\components\uSyncErrorDialog.html" />
+    <Content Include="App_Plugins\uSyncExpansions\components\usyncerrordialogController.js" />
+    <Content Include="App_Plugins\uSyncExpansions\expansionService.js" />
+    <Content Include="App_Plugins\uSyncExpansions\Lang\en-us.xml" />
+    <Content Include="App_Plugins\uSyncExpansions\licence.html" />
+    <Content Include="App_Plugins\uSyncExpansions\resources\dependencyManager.js" />
+    <Content Include="App_Plugins\uSyncExpansions\usyncexpansions.css" />
+    <Content Include="App_Plugins\uSyncExpansions\uSyncLicenceController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\dashboard.html" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\dashboardController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\delete.html" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\deleteController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\server.html" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\serverSettingsController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\serverSortController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\backoffice\uSyncPublisher\sort.html" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncPublishResult.html" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncPublishResultComponent.js" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncSendOption.html" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncSendOptionComponent.js" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncServerPicker.html" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncServerPickerComponent.js" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncUserControlledBoolean.html" />
+    <Content Include="App_Plugins\uSyncPublisher\components\uSyncUserControlledBooleanComponent.js" />
+    <Content Include="App_Plugins\uSyncPublisher\dashboard\default.html" />
+    <Content Include="App_Plugins\uSyncPublisher\dashboard\defaultController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\dashboard\settings.html" />
+    <Content Include="App_Plugins\uSyncPublisher\dashboard\settingsController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\dashboard\sync.html" />
+    <Content Include="App_Plugins\uSyncPublisher\dashboard\syncController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\dialogs\AddServer.html" />
+    <Content Include="App_Plugins\uSyncPublisher\dialogs\AddServerController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\dialogs\publisher.html" />
+    <Content Include="App_Plugins\uSyncPublisher\dialogs\publisherDialogController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\Lang\en-us.xml" />
+    <Content Include="App_Plugins\uSyncPublisher\Overlay\loader.js" />
+    <Content Include="App_Plugins\uSyncPublisher\Overlay\overlay.html" />
+    <Content Include="App_Plugins\uSyncPublisher\Overlay\overlayController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\Overlay\overlayManager.js" />
+    <Content Include="App_Plugins\uSyncPublisher\pickers\userGroupPicker.html" />
+    <Content Include="App_Plugins\uSyncPublisher\pickers\userGroupPickerController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\complete.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\completeController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\config.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\ConfigController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\lang.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\langController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\pullConfig.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\report.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\reportController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\result.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\resultController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\serverConfig.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\serverConfig.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\settings.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\realtime\settingsController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\static\config.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\static\configController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\static\result.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publishers\static\serverConfig.html" />
+    <Content Include="App_Plugins\uSyncPublisher\publish_870.css" />
+    <Content Include="App_Plugins\uSyncPublisher\publish_870.js" />
+    <Content Include="App_Plugins\uSyncPublisher\remote\remoteOverlay.html" />
+    <Content Include="App_Plugins\uSyncPublisher\remote\remoteOverlayController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\remote\setupkeys.html" />
+    <Content Include="App_Plugins\uSyncPublisher\resources\uSyncPublishActionManager.js" />
+    <Content Include="App_Plugins\uSyncPublisher\resources\uSyncPublishDialogManager.js" />
+    <Content Include="App_Plugins\uSyncPublisher\resources\uSyncPublishServerManager.js" />
+    <Content Include="App_Plugins\uSyncPublisher\serverPicker\picker.html" />
+    <Content Include="App_Plugins\uSyncPublisher\serverPicker\pickerController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\serverPicker\serverPickerDialog.html" />
+    <Content Include="App_Plugins\uSyncPublisher\serverPicker\serverPickerDialogController.js" />
+    <Content Include="App_Plugins\uSyncPublisher\services\publisherService.js" />
+    <Content Include="App_Plugins\uSyncPublisher\services\publishService.js" />
+    <Content Include="App_Plugins\uSyncPublisher\usyncpublish.css" />
     <Content Include="Web\App_Plugins\uSync.Community.StaticSiteWithSearch\css\staticSiteWithSearch.css" />
     <Content Include="Web\App_Plugins\uSync.Community.StaticSiteWithSearch\js\staticSiteWithSearchConfigModel.js" />
     <Content Include="Web\App_Plugins\uSync.Community.StaticSiteWithSearch\js\staticSiteWithSearchController.js" />
@@ -314,10 +424,10 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\uSync.8.6.2\build\uSync.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\uSync.8.6.2\build\uSync.props'))" />
-    <Error Condition="!Exists('..\packages\uSync.8.6.2\build\uSync.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\uSync.8.6.2\build\uSync.targets'))" />
     <Error Condition="!Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets'))" />
+    <Error Condition="!Exists('..\packages\uSync.8.7.0.1\build\uSync.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\uSync.8.7.0.1\build\uSync.props'))" />
+    <Error Condition="!Exists('..\packages\uSync.8.7.0.1\build\uSync.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\uSync.8.7.0.1\build\uSync.targets'))" />
   </Target>
-  <Import Project="..\packages\uSync.8.6.2\build\uSync.targets" Condition="Exists('..\packages\uSync.8.6.2\build\uSync.targets')" />
   <Import Project="..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets" Condition="Exists('..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" />
+  <Import Project="..\packages\uSync.8.7.0.1\build\uSync.targets" Condition="Exists('..\packages\uSync.8.7.0.1\build\uSync.targets')" />
 </Project>

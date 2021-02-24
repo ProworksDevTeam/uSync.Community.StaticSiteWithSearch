@@ -1,0 +1,10 @@
+﻿<div ng-controller="uSyncPublisherResultController as pvm">
+    <usync-publish-result-view results="vm.results.Results" total="vm.total"></usync-publish-result-view>
+
+    <div ng-if="!vm.complete">
+        <div class="alert alert-warning">
+            <localize key="usyncpublish_systemApplyWarning"></localize>
+        </div>
+    </div>
+
+</div>
