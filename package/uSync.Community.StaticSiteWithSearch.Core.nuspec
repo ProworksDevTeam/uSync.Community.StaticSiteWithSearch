@@ -12,7 +12,7 @@
     <releaseNotes>Improve performance</releaseNotes>
     <copyright>Copyright 2020</copyright>
     <dependencies>
-      <dependency id="uSync.Publisher.Static" version="8.5.1" />
+      <dependency id="uSync.Publisher.Static" version="8.7.0.1" />
     </dependencies>
   </metadata>
   <files>

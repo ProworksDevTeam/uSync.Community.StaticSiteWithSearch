@@ -286,6 +286,8 @@
     <Compile Include="Publisher\ExtensibleStaticPublisher.cs" />
     <Compile Include="Publisher\IStaticSitePublisherExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Publisher\IStaticSiteService.cs" />
+    <Compile Include="Publisher\StaticSiteService.cs" />
     <Compile Include="Search\ImageProcessorExtension.cs" />
     <Compile Include="Search\ISearchApplianceService.cs" />
     <Compile Include="Search\ISearchIndexEntry.cs" />

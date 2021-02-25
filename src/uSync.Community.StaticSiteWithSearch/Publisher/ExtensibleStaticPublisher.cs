@@ -27,11 +27,10 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
         public const string PublisherAlias = "static-ext";
 
         private readonly uSyncOutgoingService _outgoingService;
-        private readonly uSyncStaticSiteService _staticSiteService;
+        private readonly IStaticSiteService _staticSiteService;
         private readonly IContentService _contentService;
         private readonly SyncFileService _syncFileService;
         private readonly IPublisherSearchConfigs _publisherSearchConfigs;
-        private readonly UmbracoHelper _umbracoHelper;
         private readonly Dictionary<IStaticSitePublisherExtension, object> _staticSitePublisherExtensions;
         private readonly string _syncRoot;
 
@@ -44,12 +43,11 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
           IGlobalSettings settings,
           uSyncOutgoingService outgoingService,
           uSyncIncomingService incomingService,
-          uSyncStaticSiteService staticSiteService,
+          IStaticSiteService staticSiteService,
           IContentService contentService,
           SyncFileService syncFileService,
           IEnumerable<IStaticSitePublisherExtension> staticSitePublisherExtensions,
-          IPublisherSearchConfigs publisherSearchConfigs,
-          UmbracoHelper umbracoHelper)
+          IPublisherSearchConfigs publisherSearchConfigs)
           : base(config, logger, settings, incomingService)
         {
             _outgoingService = outgoingService;
@@ -57,7 +55,6 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             _contentService = contentService;
             _syncFileService = syncFileService;
             _publisherSearchConfigs = publisherSearchConfigs;
-            _umbracoHelper = umbracoHelper;
             _staticSitePublisherExtensions = (staticSitePublisherExtensions?.ToList() ?? new List<IStaticSitePublisherExtension>()).ToDictionary(e => e, e => (object)null);
             _syncRoot = Path.Combine(settings.LocalTempPath, "uSync", "pack");
             Actions = new Dictionary<PublishMode, IEnumerable<SyncPublisherAction>>()
@@ -169,25 +166,28 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
 
             var count = list.Count;
 
-            foreach (var (page, index) in list.Select((page, index) => (page, index)))
+            _staticSiteService.UseUmbracoHelper(umbracoHelper =>
             {
-                int itemId = _staticSiteService.GetItemId(page.Udi);
-                if (itemId > 0)
+                foreach (var (page, index) in list.Select((page, index) => (page, index)))
                 {
-                    args.Callbacks?.Update?.Invoke("Generating: " + page.Name + " html", index, count);
-                    SaveHtml(id, itemId, itemPaths);
+                    int itemId = _staticSiteService.GetItemId(page.Udi);
+                    if (itemId > 0)
+                    {
+                        args.Callbacks?.Update?.Invoke("Generating: " + page.Name + " html", index, count);
+                        SaveHtml(umbracoHelper, id, itemId, itemPaths);
+                    }
                 }
-            }
+            });
         }
 
-        private bool SaveHtml(Guid packId, int itemId, Dictionary<string, string> itemPaths)
+        private bool SaveHtml(UmbracoHelper umbracoHelper, Guid packId, int itemId, Dictionary<string, string> itemPaths)
         {
             try
             {
                 var byId = _contentService.GetById(itemId);
                 if (byId != null && byId.Published)
                 {
-                    var text = _staticSiteService.GenerateItemHtml(itemId);
+                    var text = _staticSiteService.GenerateItemHtml(umbracoHelper, itemId);
                     if (text != null && text.StartsWith("<!-- Error rendering template") && text.EndsWith(" -->"))
                     {
                         logger.Warn<ExtensibleStaticPublisher>(text.Substring(5, text.Length - 9));
