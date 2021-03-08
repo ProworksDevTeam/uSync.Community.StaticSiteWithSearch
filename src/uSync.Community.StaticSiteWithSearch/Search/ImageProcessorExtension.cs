@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Umbraco.Core.Logging;
@@ -44,17 +45,21 @@ namespace uSync.Community.StaticSiteWithSearch.Search
 
                     doc.LoadHtml(generatedHtml);
 
-                    foreach (var node in doc.DocumentNode.DescendantsAndSelf())
-                    {
-                        if (node.NodeType != HtmlNodeType.Element
-                            || !string.Equals("IMG", node.Name, StringComparison.InvariantCultureIgnoreCase)
-                            || !(node.Attributes["src"]?.DeEntitizeValue is string str && Uri.TryCreate(str, UriKind.Relative, out var src) && str.StartsWith("/media", StringComparison.InvariantCultureIgnoreCase) && str.Contains("?"))
-                            ) continue;
+                    var imageNodes = doc.DocumentNode.DescendantsAndSelf()
+                        .Where(x => x.NodeType == HtmlNodeType.Element &&
+                            (
+                                string.Equals("IMG", x.Name, StringComparison.InvariantCultureIgnoreCase) ||
+                                (x.ParentNode != null && string.Equals("PICTURE", x.ParentNode.Name, StringComparison.InvariantCultureIgnoreCase) && string.Equals("SOURCE", x.Name, StringComparison.InvariantCultureIgnoreCase))
+                            ))
+                        .SelectMany(x => x.Attributes.Where(y => y?.Name != null && (y.Name.EndsWith("src") || y.Name.EndsWith("srcset"))).Select(y => (Node: x, Attribute: y, Value: y.DeEntitizeValue, Uri: Uri.TryCreate(y.DeEntitizeValue, UriKind.Relative, out var uri) ? uri : null)))
+                        .Where(x => x.Uri != null && x.Value.StartsWith("/media", StringComparison.InvariantCultureIgnoreCase) && x.Value.Contains("?"));
 
-                        var updated = RetrieveAndSaveUrl(ctx, itemPath, src);
+                    foreach (var image in imageNodes)
+                    {
+                        var updated = RetrieveAndSaveUrl(ctx, itemPath, image.Uri);
                         if (string.IsNullOrWhiteSpace(updated)) continue;
                         
-                        node.Attributes["src"].Value = updated;
+                        image.Attribute.Value = updated;
                         hadChanges = true;
                     }
 
@@ -94,7 +99,7 @@ namespace uSync.Community.StaticSiteWithSearch.Search
             if (idx > 0)
             {
                 var end = query.IndexOf('&', idx);
-                if (end < 0 || end > idx) extension = query.Substring(idx, (end > 0 ? end : query.Length) - idx);
+                if (end < 0 || end > idx) extension = "." + query.Substring(idx, (end > 0 ? end : query.Length) - idx);
             }
             using (var hasher = new SHA256Managed())
             {
@@ -107,6 +112,21 @@ namespace uSync.Community.StaticSiteWithSearch.Search
 
             try
             {
+                var dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir))
+                {
+                    for (var i = 0; i < 20 && dir != null; i++)
+                    {
+                        try
+                        {
+                            if (i > 0) Thread.Sleep(200);
+                            Directory.CreateDirectory(dir);
+                            System.IO.File.WriteAllText(path, "");
+                            dir = null;
+                        }
+                        catch (DirectoryNotFoundException) { }
+                    }
+                }
                 using (var client = new WebClient())
                 {
                     client.DownloadFile(url, path);
@@ -117,6 +137,7 @@ namespace uSync.Community.StaticSiteWithSearch.Search
             catch (Exception ex)
             {
                 _logger.Warn<ImageProcessorExtension>(ex, "Could not retrieve the image {src}", url.PathAndQuery);
+                if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
             }
 
             return null;
