@@ -47,7 +47,7 @@ namespace uSync.Community.StaticSiteWithSearch.Algolia.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error<AlgoliaSearchApplianceService>("Could not update search appliance", ex);
+                    _logger.Error<AlgoliaSearchApplianceService>(ex, "Could not update search appliance");
                 }
             }
             else HostingEnvironment.QueueBackgroundWorkItem(async t =>
@@ -58,7 +58,7 @@ namespace uSync.Community.StaticSiteWithSearch.Algolia.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error<AlgoliaSearchApplianceService>("Could not update search appliance", ex);
+                    _logger.Error<AlgoliaSearchApplianceService>(ex, "Could not update search appliance");
                 }
             });
         }
@@ -99,7 +99,7 @@ namespace uSync.Community.StaticSiteWithSearch.Algolia.Services
             }
             catch (Exception ex)
             {
-                _logger.Error<AlgoliaSearchApplianceService>($"Could not retrieve search results from {cfg.ApplicationId}:{cfg.IndexName} for '{term}'", ex);
+                _logger.Error<AlgoliaSearchApplianceService>(ex, "Could not retrieve search results from {application}:{index} for '{term}'", cfg.ApplicationId, cfg.IndexName, term);
                 return new SearchIndexResult { PageNumber = 1, Results = new ISearchIndexEntry[0], TotalPages = 1 };
             }
         }

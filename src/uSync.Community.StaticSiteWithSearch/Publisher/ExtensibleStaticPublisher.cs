@@ -114,7 +114,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
                 }
                 catch (Exception ex)
                 {
-                    logger.Error<ExtensibleStaticPublisher>($"Could not run the {pair.Key?.GetType().FullName} extension", ex);
+                    logger.Error<ExtensibleStaticPublisher>(ex, "Could not run the {extension}", pair.Key?.GetType().FullName);
                 }
             }
         }
@@ -154,7 +154,7 @@ namespace uSync.Community.StaticSiteWithSearch.Publisher
             }
             catch (Exception ex)
             {
-                logger.Error<ExtensibleStaticPublisher>($"Could not publish", ex);
+                logger.Error<ExtensibleStaticPublisher>(ex, $"Could not publish");
                 throw;
             }
         }

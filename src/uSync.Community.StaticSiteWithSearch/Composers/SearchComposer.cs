@@ -105,7 +105,7 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
             }
             catch (Exception ex)
             {
-                _logger.Error<SearchComponent>("Could not remove index entries", ex);
+                _logger.Error<SearchComponent>(ex, "Could not remove index entries");
             }
         }
 
@@ -136,7 +136,7 @@ namespace uSync.Community.StaticSiteWithSearch.Composers
             }
             catch (Exception ex)
             {
-                _logger.Error<SearchComponent>("Could not update index entries", ex);
+                _logger.Error<SearchComponent>(ex, "Could not update index entries");
             }
         }
 

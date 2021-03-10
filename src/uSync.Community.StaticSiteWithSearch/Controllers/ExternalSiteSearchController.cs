@@ -79,7 +79,7 @@ namespace uSync.Community.StaticSiteWithSearch.Controllers
                     catch (Exception ex)
                     {
                         var err = Guid.NewGuid();
-                        Logger.Error<ExternalSiteSearchController>($"Could not rebuild index - Error ID: {err}", ex);
+                        Logger.Error<ExternalSiteSearchController>(ex, "Could not rebuild index - Error ID: {err}", err);
                         status.Error = $"An error occurred; search the logs for error ID {err} for more details.  " + ex.Message;
                     }
                     finally

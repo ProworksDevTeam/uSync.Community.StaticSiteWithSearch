@@ -70,7 +70,7 @@ namespace uSync.Community.StaticSiteWithSearch.SearchGov.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Error<ResultsController>("Could not generate the Search.gov style results", ex);
+                Logger.Error<ResultsController>(ex, "Could not generate the Search.gov style results");
                 return new MockSearchResult
                 {
                     Query = query,

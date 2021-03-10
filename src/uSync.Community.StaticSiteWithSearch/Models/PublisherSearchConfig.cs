@@ -30,13 +30,13 @@ namespace uSync.Community.StaticSiteWithSearch.Models
             if (alias.EndsWith("-ext")) alias = alias.Substring(0, alias.Length - 4);
             var prefix = (alias == "folder" ? "file" : alias) + "://" + (!string.IsNullOrWhiteSpace(username) ? username + "@" : "") + (!string.IsNullOrWhiteSpace(server) ? server + "/" : "");
             var folder = DeployerConfig?.Element("folder")?.Value?.Replace('\\', '/');
-            if (folder.StartsWith("//"))
+            if (folder != null && folder.StartsWith("//"))
             {
                 prefix = (alias == "folder" ? "file" : alias) + "://" + (!string.IsNullOrWhiteSpace(username) ? username + "@" : "");
                 folder = folder.Substring(2);
             }
-            if (!folder.EndsWith("/")) folder += '/';
-            Folder = new Uri(prefix + folder);
+            if (folder != null && !folder.EndsWith("/")) folder += '/';
+            Folder = folder != null ? new Uri(prefix + folder) : null;
 
             searchAppliance = serverElement?.Element("searchAppliance");
 

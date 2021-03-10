@@ -35,7 +35,7 @@ namespace uSync.Community.StaticSiteWithSearch.Models
             }
             catch (Exception ex)
             {
-                logger.Error<PublisherSearchConfigs>("Could not load server configs", ex);
+                logger.Error<PublisherSearchConfigs>(ex, "Could not load server configs");
             }
 
             ConfigsByServerName = configs;
